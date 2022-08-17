@@ -1,8 +1,8 @@
-module Mux_ShiftSrc(
-    input wire [31:0] in0,
-    input wire  [31:0] in1,
+module Mux_SrcRead(
+    input wire [4:0] in0,
+    input wire  [4:0] in1,
     input wire [1:0] control,
-    output wire [31:0] out
+    output wire [4:0] out
     );
 
     assign out = (control == 2'b00) ? in0:
