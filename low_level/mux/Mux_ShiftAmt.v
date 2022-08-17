@@ -1,4 +1,4 @@
-module Muu_ShiftAmt(
+module Mux_ShiftAmt(
     input wire [4:0] in0,
     input wire  [4:0] in1,
     input wire [1:0] control,
