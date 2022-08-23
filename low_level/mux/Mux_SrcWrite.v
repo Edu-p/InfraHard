@@ -4,7 +4,7 @@ module Mux_SrcWrite(
     input wire  [4:0] in2,
     input wire  [4:0] in3,
     input wire  [4:0] in4,
-    input wire [1:0] control,
+    input wire [2:0] control,
     output wire [4:0] out
     );
 
