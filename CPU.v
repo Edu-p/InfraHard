@@ -181,6 +181,10 @@ Mux_SrcWrite mux_src_write(
     RT, OFFSET, 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
 );
 
+Mux_SrcData mux_src_data(
+    a, LS, HI, LO, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, srcData, srcDataOut
+);
+
 
 
 
