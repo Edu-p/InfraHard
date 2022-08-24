@@ -193,7 +193,9 @@ Mux_AluSrcB mux_alu_src_b(
     b, 32'b00000000000000000000000000000100, signextend16, shiftLeft2, aluSrcB, aluSrcBOut
 );
 
-
+Mux_PcSource mux_pc_source(
+    result, ALUOut, Concat, memoryDataRegister, EPC, ls, pcSource, pcSourceOut
+);
 
 
     
