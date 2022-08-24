@@ -14,8 +14,8 @@ module cpu_MIPS (
         wire srcRead;
         wire [2:0] srcWrite;
         wire [3:0] srcData;
-        wire [1:0] aluScrcA;
-        wire [1:0] aluScrcB;
+        wire [1:0] aluSrcA;
+        wire [1:0] aluSrcB;
         wire [2:0] pcSource;
 
         // other blocks
@@ -189,6 +189,9 @@ Mux_AluSrcA mux_alu_src_a(
     pc, a, memoryDataRegister, aluSrcA, aluSrcAOut
 );
 
+Mux_AluSrcB mux_alu_src_b(
+    b, 32'b00000000000000000000000000000100, signextend16, shiftLeft2, aluSrcB, aluSrcBOut
+);
 
 
 
