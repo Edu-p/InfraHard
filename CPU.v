@@ -111,7 +111,7 @@ module cpu_MIPS (
 
         //Registers
         wire [31:0] registersData1;
-        wire [31:0] registersData1;       
+        wire [31:0] registersData2;       
 
         //ShiftLeft2
         wire [31:0] shiftLeft2;
@@ -152,7 +152,25 @@ module cpu_MIPS (
         wire [31:0] pcSourceOut;
 
 
+Mux_ExcpControl mux_excp_control(
+     32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, excpControl, excpControlOut
+);
+ 
+Mux_Iord mux_iord(
+    pc, ALUOut, excpControlOut, result, iord, iordOut
+);
 
+Mux_ExcpCtrl mux_excp_ctrl(
+    32'b00000000000000000000000000000001, 32'b00000000000000000000000000000010, 32'b00000000000000000000000000000011, excpCtrl, excpCtrlOut 
+);
+
+Mux_ShiftSrc mux_shift_src(
+    a, b, shiftSrc, shiftSrcOut
+);
+
+Mux_ShiftAmt mux_shift_amt(
+    b, OFFSET, shiftAmt, shiftAmtOut
+);
 
 
 
