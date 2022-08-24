@@ -173,6 +173,10 @@ Mux_ShiftAmt mux_shift_amt(
 );
 
 
+Mux_SrcRead mux_src_read(
+    RS, 32'b00000000000000000000000000011101, srcRead,srcReadOut
+);
+
 
 
 
