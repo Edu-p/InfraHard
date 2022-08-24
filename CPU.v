@@ -177,6 +177,9 @@ Mux_SrcRead mux_src_read(
     RS, 5'b11101, srcRead,srcReadOut
 );
 
+Mux_SrcWrite mux_src_write(
+    RT, OFFSET, 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
+);
 
 
 
