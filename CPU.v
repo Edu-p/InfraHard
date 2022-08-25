@@ -205,11 +205,15 @@ ExtendShiftLeft2 extend_shift_left_2(
 );
 
 ShiftLeft2 shift_left_2(
-    signextend16, shift_left_2
+    signextend16, shiftLeft2
 );
 
 ShiftLeft16 shift_left_16(
     OFFSET, shiftleft16
+);
+
+SignExtend1 sign_extend_1(
+    LT, signExtend1
 );
 
 endmodule
