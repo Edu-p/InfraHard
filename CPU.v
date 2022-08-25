@@ -140,6 +140,7 @@ module cpu_MIPS (
         wire EQ;
         wire GT;
         wire O;
+        wire neg;
 
         //signExtend1
         wire [31:0] signExtend1;
@@ -220,7 +221,7 @@ module cpu_MIPS (
         OFFSET, signExtend16
     );
 
-// instantiate provided modules
+// instantiate provided modules(except registradores)
     Banco_reg banco_reg(
         clk, reset, regWrite, srcReadOut, RT, srcWriteOut, srcDataOut, registersData1, registersData2 
     );
@@ -236,5 +237,10 @@ module cpu_MIPS (
     RegDesloc reg_desloc(
         clk, reset, shiftControl, shiftAmtOut, shiftSrcOut, shiftReg    
     );
+
+    ula32 ula_32(
+        aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
+    );
+        
 
 endmodule
