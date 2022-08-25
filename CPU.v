@@ -126,10 +126,10 @@ module cpu_MIPS (
         wire [31:0] b;
 
         //aluSrcA
-        wire [31:0] aluSrcAOut
+        wire [31:0] aluSrcAOut;
 
         //aluSrcB
-        wire [31:0] aluSrcBOut
+        wire [31:0] aluSrcBOut;
 
         //ALU
         wire zero;
@@ -198,14 +198,4 @@ Mux_PcSource mux_pc_source(
 );
 
 
-    
-
-
-
-
-
-
-
-
-
-
+endmodule
