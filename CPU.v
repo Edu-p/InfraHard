@@ -229,4 +229,8 @@ module cpu_MIPS (
         clk, reset, irWrite, memory, OPCODE, RS, RT, OFFSET
     );
 
+    Memoria memoria(
+        iordOut, clk, memWrite, ss, memory
+    );
+
 endmodule
