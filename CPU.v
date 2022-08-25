@@ -216,4 +216,8 @@ SignExtend1 sign_extend_1(
     LT, signExtend1
 );
 
+SignExtend16 sign_extend_16(
+    OFFSET, signExtend16
+);
+
 endmodule
