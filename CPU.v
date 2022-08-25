@@ -204,5 +204,10 @@ ExtendShiftLeft2 extend_shift_left_2(
     RS, RT, OFFSET, extendShiftLeft2
 );
 
+ShiftLeft2 shift_left_2(
+    signextend16, shift_left_2
+);
+
+
 
 endmodule
