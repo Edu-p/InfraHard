@@ -74,6 +74,9 @@ module cpu_MIPS (
         // excpCtrl
         wire [31:0] excpCtrlOut;
 
+        // extendshiftleft2
+        wire [27:0] extendShiftLeft2;
+
         //SS
         wire [31:0] ss;
 
@@ -195,6 +198,10 @@ Mux_AluSrcB mux_alu_src_b(
 
 Mux_PcSource mux_pc_source(
     result, ALUOut, Concat, memoryDataRegister, EPC, ls, pcSource, pcSourceOut
+);
+
+ExtendShiftLeft2 extend_shift_left_2(
+    RS, RT, OFFSET, extendShiftLeft2
 );
 
 
