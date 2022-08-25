@@ -233,4 +233,8 @@ module cpu_MIPS (
         iordOut, clk, memWrite, ss, memory
     );
 
+    RegDesloc reg_desloc(
+        clk, reset, shiftControl, shiftAmtOut, shiftSrcOut, shiftReg    
+    );
+
 endmodule
