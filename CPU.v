@@ -154,70 +154,76 @@ module cpu_MIPS (
         //pcSource
         wire [31:0] pcSourceOut;
 
+// instantiate mux
+    Mux_ExcpControl mux_excp_control(
+        32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, excpControl, excpControlOut
+    );
+    
+    Mux_Iord mux_iord(
+        pc, ALUOut, excpControlOut, result, iord, iordOut
+    );
 
-Mux_ExcpControl mux_excp_control(
-     32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, excpControl, excpControlOut
-);
- 
-Mux_Iord mux_iord(
-    pc, ALUOut, excpControlOut, result, iord, iordOut
-);
+    Mux_ExcpCtrl mux_excp_ctrl(
+        32'b00000000000000000000000000000001, 32'b00000000000000000000000000000010, 32'b00000000000000000000000000000011, excpCtrl, excpCtrlOut 
+    );
 
-Mux_ExcpCtrl mux_excp_ctrl(
-    32'b00000000000000000000000000000001, 32'b00000000000000000000000000000010, 32'b00000000000000000000000000000011, excpCtrl, excpCtrlOut 
-);
+    Mux_ShiftSrc mux_shift_src(
+        a, b, shiftSrc, shiftSrcOut
+    );
 
-Mux_ShiftSrc mux_shift_src(
-    a, b, shiftSrc, shiftSrcOut
-);
-
-Mux_ShiftAmt mux_shift_amt(
-    b, OFFSET, shiftAmt, shiftAmtOut
-);
+    Mux_ShiftAmt mux_shift_amt(
+        b, OFFSET, shiftAmt, shiftAmtOut
+    );
 
 
-Mux_SrcRead mux_src_read(
-    RS, 5'b11101, srcRead,srcReadOut
-);
+    Mux_SrcRead mux_src_read(
+        RS, 5'b11101, srcRead,srcReadOut
+    );
 
-Mux_SrcWrite mux_src_write(
-    RT, OFFSET, 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
-);
+    Mux_SrcWrite mux_src_write(
+        RT, OFFSET, 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
+    );
 
-Mux_SrcData mux_src_data(
-    a, LS, HI, LO, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, srcData, srcDataOut
-);
+    Mux_SrcData mux_src_data(
+        a, LS, HI, LO, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, srcData, srcDataOut
+    );
 
-Mux_AluSrcA mux_alu_src_a(
-    pc, a, memoryDataRegister, aluSrcA, aluSrcAOut
-);
+    Mux_AluSrcA mux_alu_src_a(
+        pc, a, memoryDataRegister, aluSrcA, aluSrcAOut
+    );
 
-Mux_AluSrcB mux_alu_src_b(
-    b, 32'b00000000000000000000000000000100, signextend16, shiftLeft2, aluSrcB, aluSrcBOut
-);
+    Mux_AluSrcB mux_alu_src_b(
+        b, 32'b00000000000000000000000000000100, signextend16, shiftLeft2, aluSrcB, aluSrcBOut
+    );
 
-Mux_PcSource mux_pc_source(
-    result, ALUOut, Concat, memoryDataRegister, EPC, ls, pcSource, pcSourceOut
-);
+    Mux_PcSource mux_pc_source(
+        result, ALUOut, Concat, memoryDataRegister, EPC, ls, pcSource, pcSourceOut
+    );
 
-ExtendShiftLeft2 extend_shift_left_2(
-    RS, RT, OFFSET, extendShiftLeft2
-);
+// instantiate shiftleft and signextend
+    ExtendShiftLeft2 extend_shift_left_2(
+        RS, RT, OFFSET, extendShiftLeft2
+    );
 
-ShiftLeft2 shift_left_2(
-    signextend16, shiftLeft2
-);
+    ShiftLeft2 shift_left_2(
+        signextend16, shiftLeft2
+    );
 
-ShiftLeft16 shift_left_16(
-    OFFSET, shiftleft16
-);
+    ShiftLeft16 shift_left_16(
+        OFFSET, shiftleft16
+    );
 
-SignExtend1 sign_extend_1(
-    LT, signExtend1
-);
+    SignExtend1 sign_extend_1(
+        LT, signExtend1
+    );
 
-SignExtend16 sign_extend_16(
-    OFFSET, signExtend16
-);
+    SignExtend16 sign_extend_16(
+        OFFSET, signExtend16
+    );
+
+// instantiate provided modules
+    Banco_reg banco_reg(
+        clk, reset, regWrite, srcReadOut, RT, srcWriteOut, srcDataOut, registersData1, registersData2 
+    );
 
 endmodule
