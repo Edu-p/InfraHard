@@ -99,9 +99,8 @@ module cpu_MIPS (
         wire [31:0] ls;
 
 
-
         //srcRead
-        wire [31:0] srcReadOut;
+        wire [4:0] srcReadOut;
 
         //srcWrite
         wire [31:0] srcWriteOut;
@@ -224,6 +223,10 @@ module cpu_MIPS (
 // instantiate provided modules
     Banco_reg banco_reg(
         clk, reset, regWrite, srcReadOut, RT, srcWriteOut, srcDataOut, registersData1, registersData2 
+    );
+
+    Instr_Reg instr_reg(
+        clk, reset, irWrite, memory, OPCODE, RS, RT, OFFSET
     );
 
 endmodule
