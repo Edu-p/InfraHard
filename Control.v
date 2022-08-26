@@ -54,7 +54,12 @@ module Control(
         output wire memRegControl;
         output wire aControl;
         output wire bControl;
+        output wire reset;
 
 );
+
+
+
+
 
 endmodule

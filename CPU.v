@@ -39,6 +39,7 @@ module cpu_MIPS (
         wire memRegControl;
         wire aControl;
         wire bControl;
+        wire reset;
     
 
 
