@@ -264,4 +264,11 @@ module cpu_MIPS (
         clk, reset, bControl, registersData2, b
     );
 
+    Registrador aluoutBloco(
+        clk, reset, aluOutControl, result, ALUOut
+    );
+
+    Registrador epcBloco(
+        clk, reset, epcControl, result, EPC
+    );
 endmodule
