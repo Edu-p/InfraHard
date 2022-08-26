@@ -119,7 +119,13 @@ module Control(
 
         if(reset=1'b1)begin
             if(state != RESET_State)begin
-                  // mux
+                    resetOut = 1'b0;
+                    state = RESET_State
+                end else begin
+                    resetOut = 1'b1;
+                    state = fetch
+                end 
+                // mux
                     excpControl = 2'b00;
                     iord = 2'b00;
                     excpCtrl = 2'b00;
@@ -153,15 +159,10 @@ module Control(
                     memRegControl = 1'b0;
                     aControl = 1'b0;
                     bControl = 1'b0;
-                    resetOut = 1'b0;
-
-                counter = 6'b000000;
-            end else begin
-            
-            end 
-
-
-
+                    counter = 6'b000000;
+            else begin
+                case(state) fetch:
+            end
     end
 
 endmodule
