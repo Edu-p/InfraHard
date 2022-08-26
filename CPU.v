@@ -241,6 +241,12 @@ module cpu_MIPS (
     ula32 ula_32(
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
     );
-        
+
+    Control_unit Control_unit(
+        clk, reset, excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite,
+        srcData, aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl,
+        memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
+        aluOutControl, epcControl, reset_out
+    );
 
 endmodule
