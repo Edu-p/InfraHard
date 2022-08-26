@@ -32,8 +32,15 @@ module cpu_MIPS (
         wire [2:0] aluControl;
         wire aluOutControl;
         wire epcControl;
-    // received wires
-        //TODO
+        wire himultControl;
+        wire lomultControl;
+        wire hidivControl;
+        wire lodivControl;
+        wire memRegControl;
+        wire aControl;
+        wire bControl;
+        wire reset;
+    
 
 
 // Data wires
@@ -59,11 +66,17 @@ module cpu_MIPS (
         // div
         wire [31:0] div;
         
-        // HI
-        wire [31:0] hi;
+        // HImult
+        wire [31:0] hiMult;
 
-        // LO
-        wire [31:0] lo;
+        // LOmult
+        wire [31:0] loMult;
+
+        // HIdiv
+        wire [31:0] hiDiv;
+
+        // LOdiv
+        wire [31:0] loDiv;
 
         // signExtend16
         wire [31:0] signextend16;
@@ -154,6 +167,9 @@ module cpu_MIPS (
         //pcSource
         wire [31:0] pcSourceOut;
 
+        //Exception
+        wire notFound;
+        wire div0;
 // instantiate mux
     Mux_ExcpControl mux_excp_control(
         32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, excpControl, excpControlOut
@@ -185,7 +201,7 @@ module cpu_MIPS (
     );
 
     Mux_SrcData mux_src_data(
-        a, LS, HI, LO, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, srcData, srcDataOut
+        a, LS, HImult, LOmult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, HIdiv, LOdiv, srcData, srcDataOut
     );
 
     Mux_AluSrcA mux_alu_src_a(
@@ -240,6 +256,53 @@ module cpu_MIPS (
 
     ula32 ula_32(
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
+    );
+
+    Control_unit Control_unit(
+        clk, reset, excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite,
+        srcData, aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl,
+        memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
+        aluOutControl, epcControl, reset_out
+    );
+// instantiate registradores
+    Registrador pcBloco(
+        clk, reset, control, pcSourceOut, pc
+    );
+
+    Registrador mdrBloco(
+        clk, reset, memRegControl, memory, memoryDataRegister 
+    );
+
+    Registrador aBloco(
+        clk, reset, aControl, registersData1, a
+    );
+
+    Registrador bBloco(
+        clk, reset, bControl, registersData2, b
+    );
+
+    Registrador aluoutBloco(
+        clk, reset, aluOutControl, result, ALUOut
+    );
+
+    Registrador epcBloco(
+        clk, reset, epcControl, result, EPC
+    ); 
+
+    Registrador hiMultBloco(
+        clk, reset, himultControl, mult, hiMult
+    );
+
+    Registrador loMultBloco(
+        clk, reset, lomultControl, mult, loMult
+    );
+
+    Registrador hiDivBloco(
+        clk, reset, hidivControl, div, hiDiv
+    );
+
+    Registrador loDivBloco(
+        clk, reset, lodivControl, div, loDiv
     );
 
     Control_unit Control_unit(
