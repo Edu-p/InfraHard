@@ -32,6 +32,11 @@ module cpu_MIPS (
         wire [2:0] aluControl;
         wire aluOutControl;
         wire epcControl;
+        wire hiControl;
+        wire loControl;
+        wire memRegControl;
+        wire aControl;
+        wire bControl;
     // received wires
         //TODO
 
@@ -242,5 +247,6 @@ module cpu_MIPS (
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
     );
         
+    
 
 endmodule
