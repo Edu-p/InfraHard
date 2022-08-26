@@ -64,11 +64,17 @@ module cpu_MIPS (
         // div
         wire [31:0] div;
         
-        // HI
-        wire [31:0] hi;
+        // HImult
+        wire [31:0] hiMult;
 
-        // LO
-        wire [31:0] lo;
+        // LOmult
+        wire [31:0] loMult;
+
+        // HIdiv
+        wire [31:0] hiDiv;
+
+        // LOdiv
+        wire [31:0] loDiv;
 
         // signExtend16
         wire [31:0] signextend16;
@@ -190,7 +196,7 @@ module cpu_MIPS (
     );
 
     Mux_SrcData mux_src_data(
-        a, LS, HI, LO, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, srcData, srcDataOut
+        a, LS, HImult, LOmult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, HIdiv, LOdiv, srcData, srcDataOut
     );
 
     Mux_AluSrcA mux_alu_src_a(
@@ -270,5 +276,6 @@ module cpu_MIPS (
 
     Registrador epcBloco(
         clk, reset, epcControl, result, EPC
-    );
+    ); 
+
 endmodule
