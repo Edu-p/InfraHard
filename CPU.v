@@ -39,8 +39,7 @@ module cpu_MIPS (
         wire memRegControl;
         wire aControl;
         wire bControl;
-    // received wires
-        //TODO
+    
 
 
 // Data wires
