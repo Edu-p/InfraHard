@@ -32,6 +32,11 @@ module cpu_MIPS (
         wire [2:0] aluControl;
         wire aluOutControl;
         wire epcControl;
+        wire hiControl;
+        wire loControl;
+        wire memRegControl;
+        wire aControl;
+        wire bControl;
     // received wires
         //TODO
 
@@ -242,5 +247,28 @@ module cpu_MIPS (
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
     );
         
+// instantiate registradores
+    Registrador pcBloco(
+        clk, reset, control, pcSourceOut, pc
+    );
 
+    Registrador mdrBloco(
+        clk, reset, memRegControl, memory, memoryDataRegister 
+    );
+
+    Registrador aBloco(
+        clk, reset, aControl, registersData1, a
+    );
+
+    Registrador bBloco(
+        clk, reset, bControl, registersData2, b
+    );
+
+    Registrador aluoutBloco(
+        clk, reset, aluOutControl, result, ALUOut
+    );
+
+    Registrador epcBloco(
+        clk, reset, epcControl, result, EPC
+    );
 endmodule
