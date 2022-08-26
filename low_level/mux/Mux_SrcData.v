@@ -8,6 +8,8 @@ module Mux_SrcData(
     input wire  [31:0] in6,
     input wire  [31:0] in7,
     input wire  [31:0] in8,
+    input wire  [31:0] in9,
+    input wire  [31:0] in10,
     input wire [3:0] control,
     output wire [31:0] out
     );
@@ -20,6 +22,8 @@ module Mux_SrcData(
                  (control == 4'b0101) ? in5:
                  (control == 4'b0110) ? in6:
                  (control == 4'b0111) ? in7:
-                 in8;
+                 (control == 4'b1000) ? in8:
+                 (control == 4'b1001) ? in9:
+                 in10;
                  
 endmodule
