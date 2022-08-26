@@ -247,6 +247,10 @@ module cpu_MIPS (
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
     );
         
+// instantiate registradores
+    Registrador pcBloco(
+        clk, reset, control, pcSourceOut, pc
+    );
     
 
 endmodule
