@@ -118,6 +118,41 @@ module Control(
     always @(posedge clk) begin
 
         if(reset=1'b1)begin
+            // mux
+                excpControl = 2'b00;
+                iord = 2'b00;
+                excpCtrl = 2'b00;
+                shiftSrc = 1'b0;
+                shiftAmt = 1'b0;
+                srcRead = 1'b0;
+                srcWrite = 3'b000;
+                srcData = 4'b0000;
+                aluSrcA = 2'b00;
+                aluSrcB = 2'b00;
+                pcSource = 3'b000;
+
+            // other blocks
+                control = 1'b0;
+                multControl = 1'b0;
+                divControl = 1'b0;
+                seControl = 1'b0;
+                memWrite = 1'b0;
+                ssControl = 2'b00;
+                irWrite = 1'b0;
+                lsControl = 2'b00;
+                shiftControl = 3'b000;
+                regWrite = 1'b0;
+                aluControl = 3'b000;
+                aluOutControl = 1'b0;
+                epcControl = 1'b0;
+                himultControl = 1'b0;
+                lomultControl = 1'b0;
+                hidivControl = 1'b0;
+                lodivControl = 1'b0;
+                memRegControl = 1'b0;
+                aControl = 1'b0;
+                bControl = 1'b0;
+                counter = 6'b000000;
             if(state != RESET_State)begin
                     resetOut = 1'b0;
                     state = RESET_State
@@ -125,43 +160,22 @@ module Control(
                     resetOut = 1'b1;
                     state = fetch
                 end 
-                // mux
-                    excpControl = 2'b00;
-                    iord = 2'b00;
-                    excpCtrl = 2'b00;
-                    shiftSrc = 1'b0;
-                    shiftAmt = 1'b0;
-                    srcRead = 1'b0;
-                    srcWrite = 3'b000;
-                    srcData = 4'b0000;
-                    aluSrcA = 2'b00;
-                    aluSrcB = 2'b00;
-                    pcSource = 3'b000;
-
-                // other blocks
-                    control = 1'b0;
-                    multControl = 1'b0;
-                    divControl = 1'b0;
-                    seControl = 1'b0;
-                    memWrite = 1'b0;
-                    ssControl = 2'b00;
-                    irWrite = 1'b0;
-                    lsControl = 2'b00;
-                    shiftControl = 3'b000;
-                    regWrite = 1'b0;
-                    aluControl = 3'b000;
-                    aluOutControl = 1'b0;
-                    epcControl = 1'b0;
-                    himultControl = 1'b0;
-                    lomultControl = 1'b0;
-                    hidivControl = 1'b0;
-                    lodivControl = 1'b0;
-                    memRegControl = 1'b0;
-                    aControl = 1'b0;
-                    bControl = 1'b0;
-                    counter = 6'b000000;
+           
             else begin
                 case(state) fetch:
+                    if(counter != 6'b000011)begin
+                        aluControl = 3'b001;
+                        AluSrcB = 2'b01;
+                        counter = counter + 1;
+
+                    end else begin
+                        aluControl = 3'b001;
+                        AluSrcB = 2'b01;
+                        control = 1'b1;
+                        irWrite = 1'b1;
+                        counter = 6'b000000;
+                        state = decode;
+                    end
             end
     end
 
