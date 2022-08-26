@@ -32,8 +32,10 @@ module cpu_MIPS (
         wire [2:0] aluControl;
         wire aluOutControl;
         wire epcControl;
-        wire hiControl;
-        wire loControl;
+        wire himultControl;
+        wire lomultControl;
+        wire hidivControl;
+        wire lodivControl;
         wire memRegControl;
         wire aControl;
         wire bControl;
@@ -277,5 +279,13 @@ module cpu_MIPS (
     Registrador epcBloco(
         clk, reset, epcControl, result, EPC
     ); 
+
+    Registrador hiMultBloco(
+        clk, reset, himultControl, mult, hiMult
+    );
+
+    Registrador loMultBloco(
+        clk, reset, lomultControl, mult, loMult
+    );
 
 endmodule
