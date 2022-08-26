@@ -288,4 +288,14 @@ module cpu_MIPS (
         clk, reset, lomultControl, mult, loMult
     );
 
+    Registrador hiDivBloco(
+        clk, reset, hidivControl, div, hiDiv
+    );
+
+    Registrador loDivBloco(
+        clk, reset, lodivControl, div, loDiv
+    );
+
+    
+
 endmodule
