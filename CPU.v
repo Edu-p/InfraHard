@@ -256,4 +256,12 @@ module cpu_MIPS (
         clk, reset, memRegControl, memory, memoryDataRegister 
     );
 
+    Registrador aBloco(
+        clk, reset, aControl, registersData1, a
+    );
+
+    Registrador bBloco(
+        clk, reset, bControl, registersData2, b
+    );
+
 endmodule
