@@ -167,6 +167,9 @@ module cpu_MIPS (
         //pcSource
         wire [31:0] pcSourceOut;
 
+        //Exception
+        wire notFound;
+        wire div0;
 // instantiate mux
     Mux_ExcpControl mux_excp_control(
         32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, excpControl, excpControlOut
