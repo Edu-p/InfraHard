@@ -251,6 +251,9 @@ module cpu_MIPS (
     Registrador pcBloco(
         clk, reset, control, pcSourceOut, pc
     );
-    
+
+    Registrador mdrBloco(
+        clk, reset, memRegControl, memory, memoryDataRegister 
+    );
 
 endmodule
