@@ -17,7 +17,7 @@ module Control(
         input wire EQ,
         input wire neg,
         input wire [5:0] CODE,
-        input wire [5:0] ,
+        input wire [5:0] , // ? que isso zap
 
     // outputs
         // mux
