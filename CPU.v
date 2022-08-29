@@ -20,8 +20,8 @@ module cpu_MIPS (
 
         // other blocks
         wire control;
-        wire multControl;
-        wire divControl;
+        wire [1:0]multControl;
+        wire [1:0]divControl;
         wire seControl;
         wire memWrite;
         wire [1:0] ssControl;
@@ -257,12 +257,6 @@ module cpu_MIPS (
         aluSrcAOut, aluSrcBOut, aluControl, result, O, neg, zero, EQ, GT, LT
     );
 
-    Control_unit Control_unit(
-        clk, reset, excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite,
-        srcData, aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl,
-        memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
-        aluOutControl, epcControl, reset_out
-    );
 // instantiate registradores
     Registrador pcBloco(
         clk, reset, control, pcSourceOut, pc
@@ -304,11 +298,14 @@ module cpu_MIPS (
         clk, reset, lodivControl, div, loDiv
     );
 
-    Control_unit control_unit(
-        clk, reset, excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite,
-        srcData, aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl,
+// instantiate ControlUnit
+    Control controlUnit(
+        clk, reset, O, notFound, div0, OPCODE, OFFSET[5:0], zero, LT, GT, EQ, neg, 
+        excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite, srcData,
+        aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl, 
         memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
-        aluOutControl, epcControl, reset_out
-    );
+        aluOutControl, epcControl, himultControl, lomultControl, hidivControl, lodivControl,
+        memRegControl, aControl, bControl, resetOut
+    );    
 
 endmodule

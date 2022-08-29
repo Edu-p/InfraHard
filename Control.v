@@ -20,7 +20,6 @@ module Control(
         input wire GT,
         input wire EQ,
         input wire neg,
-        input wire [5:0] CODE,
 
     // outputs
         // mux
@@ -38,8 +37,8 @@ module Control(
 
         // other blocks
         output reg control,
-        output reg multControl,
-        output reg divControl,
+        output reg [1:0]multControl,
+        output reg [1:0]divControl,
         output reg seControl,
         output reg memWrite,
         output reg [1:0] ssControl,
