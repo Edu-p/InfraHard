@@ -1,4 +1,4 @@
-module cpu_MIPS (
+module CPU (
     input wire clk,
     input wire reset
 );
@@ -102,7 +102,7 @@ module cpu_MIPS (
         wire [31:0] shiftSrcOut;
 
         //shiftAmt
-        wire [31:0] shiftAmtOut;
+        wire [4:0] shiftAmtOut;
 
         //shiftReg
         wire [31:0] shiftReg;

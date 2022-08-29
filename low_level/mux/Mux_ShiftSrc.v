@@ -1,11 +1,11 @@
 module Mux_ShiftSrc(
     input wire [31:0] in0,
     input wire  [31:0] in1,
-    input wire [1:0] control,
+    input wire control,
     output wire [31:0] out
     );
 
-    assign out = (control == 2'b00) ? in0:
+    assign out = (control == 1'b0) ? in0:
                  in1;
                  
 endmodule

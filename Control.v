@@ -193,7 +193,7 @@ module Control(
                             counter = counter + 1;
                         end
                         else begin
-                            counter = 6'b000000
+                            counter = 6'b000000;
                         end
                         regWrite = 1'b0;
                         aluControl = 3'b001;
@@ -242,7 +242,9 @@ module Control(
                     end
                     codeIorJ: begin
                         case(OPCODE)
-
+                            ADDI: begin
+                                counter = counter + 1;
+                            end
                         endcase
                     end
 
