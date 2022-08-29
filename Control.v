@@ -156,27 +156,29 @@ module Control(
             if(state != RESET_State)begin
                     resetOut = 1'b0;
                     state = RESET_State
-                end else begin
+            end 
+            else begin
                     resetOut = 1'b1;
                     state = fetch
-                end 
-           
-            else begin
-                case(state) fetch:
+            end 
+        end   
+        else begin
+            case(state) 
+                fetch: begin
+                    aluControl = 3'b001;
+                    AluSrcB = 2'b01;
                     if(counter != 6'b000011)begin
-                        aluControl = 3'b001;
-                        AluSrcB = 2'b01;
                         counter = counter + 1;
-
-                    end else begin
-                        aluControl = 3'b001;
-                        AluSrcB = 2'b01;
+                    end 
+                    else begin
                         control = 1'b1;
                         irWrite = 1'b1;
                         counter = 6'b000000;
                         state = decode;
                     end
-            end
+                end
+            endcase
+        end
     end
 
 endmodule
