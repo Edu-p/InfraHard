@@ -17,47 +17,47 @@ module Control(
         input wire EQ,
         input wire neg,
         input wire [5:0] CODE,
-        input wire [5:0] , // ? que isso zap
 
     // outputs
         // mux
-        output wire [1:0] excpControl;
-        output wire [1:0] iord;
-        output wire [1:0] excpCtrl;
-        output wire shiftSrc;
-        output wire shiftAmt;
-        output wire srcRead;
-        output wire [2:0] srcWrite;
-        output wire [3:0] srcData;
-        output wire [1:0] aluSrcA;
-        output wire [1:0] aluSrcB;
-        output wire [2:0] pcSource;
+        output reg [1:0] excpControl,
+        output reg [1:0] iord,
+        output reg [1:0] excpCtrl,
+        output reg shiftSrc,
+        output reg shiftAmt,
+        output reg srcRead,
+        output reg [2:0] srcWrite,
+        output reg [3:0] srcData,
+        output reg [1:0] aluSrcA,
+        output reg [1:0] aluSrcB,
+        output reg [2:0] pcSource,
 
         // other blocks
-        output wire control;
-        output wire multControl;
-        output wire divControl;
-        output wire seControl;
-        output wire memWrite;
-        output wire [1:0] ssControl;
-        output wire irWrite;
-        output wire [1:0] lsControl;
-        output wire [2:0] shiftControl;
-        output wire regWrite;
-        output wire [2:0] aluControl;
-        output wire aluOutControl;
-        output wire epcControl;
-        output wire himultControl;
-        output wire lomultControl;
-        output wire hidivControl;
-        output wire lodivControl;
-        output wire memRegControl;
-        output wire aControl;
-        output wire bControl;
-        output wire resetOut;
+        output reg control,
+        output reg multControl,
+        output reg divControl,
+        output reg seControl,
+        output reg memWrite,
+        output reg [1:0] ssControl,
+        output reg irWrite,
+        output reg [1:0] lsControl,
+        output reg [2:0] shiftControl,
+        output reg regWrite,
+        output reg [2:0] aluControl,
+        output reg aluOutControl,
+        output reg epcControl,
+        output reg himultControl,
+        output reg lomultControl,
+        output reg hidivControl,
+        output reg lodivControl,
+        output reg memRegControl,
+        output reg aControl,
+        output reg bControl,
+        output reg resetOut
 
 );
 // states
+    
     
     parameter RESET_State = 6'b111111;
     parameter fetch = 6'b110000;
@@ -108,6 +108,10 @@ module Control(
     parameter SLTI = 6'b001010;
     parameter LUI = 6'b001111;
 
+// variables
+    reg [5:0] state;
+    reg [5:0] counter;
+
 
 // reset
     initial begin
@@ -117,7 +121,7 @@ module Control(
 // main cycle
     always @(posedge clk) begin
 
-        if(reset=1'b1)begin
+        if(reset == 1'b1)begin
             // mux
                 excpControl = 2'b00;
                 iord = 2'b00;
@@ -155,28 +159,45 @@ module Control(
                 counter = 6'b000000;
             if(state != RESET_State)begin
                     resetOut = 1'b0;
-                    state = RESET_State
+                    state = RESET_State;
             end 
             else begin
                     resetOut = 1'b1;
-                    state = fetch
+                    state = fetch;
             end 
         end   
         else begin
             case(state) 
-                fetch: begin
-                    aluControl = 3'b001;
-                    AluSrcB = 2'b01;
-                    if(counter != 6'b000011)begin
-                        counter = counter + 1;
-                    end 
-                    else begin
-                        control = 1'b1;
-                        irWrite = 1'b1;
-                        counter = 6'b000000;
-                        state = decode;
+                //Fetch
+                    fetch: begin
+                        aluControl = 3'b001;
+                        aluSrcB = 2'b01;
+                        if(counter != 6'b000011)begin
+                            counter = counter + 1;
+                        end 
+                        else begin
+                            control = 1'b1;
+                            irWrite = 1'b1;
+                            counter = 6'b000000;
+                            state = decode;
+                        end
                     end
-                end
+
+                //Decode
+                    decode: begin
+                        
+                        if(counter == 6'b000000)begin
+                            counter = counter + 1;
+                        end
+                        regWrite = 1'b0;
+                        aluControl = 3'b001;
+                        srcRead = 1'b0;
+                        aluSrcA = 2'b00;
+                        aluSrcB = 2'b11;
+                        seControl = 1'b1;
+                        aluOutControl = 1'b1;
+
+                    end
             endcase
         end
     end
