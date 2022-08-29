@@ -10,6 +10,10 @@ module Control(
         input wire notFound,
         input wire div0,
 
+        //instruction
+        input wire [5:0] OPCODE,
+        input wire [5:0] Funct,
+
         // other entries
         input wire zero,
         input wire LT, 
@@ -58,6 +62,8 @@ module Control(
 );
 // states
     
+    parameter codeR = 6'b000000;
+    parameter codeIorJ = 6'b000001;
     
     parameter RESET_State = 6'b111111;
     parameter fetch = 6'b110000;
@@ -65,9 +71,7 @@ module Control(
     parameter op404 = 6'b111101;
     parameter overflow = 6'b001100;
     parameter ZeroDiv_State = 6'b100101;
-
 // r format
-    parameter codeR = 6'b000000;
 
     parameter ADD = 6'b100000;
     parameter AND = 6'b100100;
@@ -189,6 +193,9 @@ module Control(
                         if(counter == 6'b000000)begin
                             counter = counter + 1;
                         end
+                        else begin
+                            counter = 6'b000000
+                        end
                         regWrite = 1'b0;
                         aluControl = 3'b001;
                         srcRead = 1'b0;
@@ -197,7 +204,23 @@ module Control(
                         seControl = 1'b1;
                         aluOutControl = 1'b1;
 
+                        if(OPCODE == codeR)begin
+                            state = codeR;
+                        end
+                        else begin
+                            state = codeIorJ;
+                        end
                     end
+
+                    codeR: begin
+                        case(Funct)
+                        endcase
+                    end
+                    codeIorJ: begin
+                        case(Funct)
+                        endcase
+                    end
+
             endcase
         end
     end
