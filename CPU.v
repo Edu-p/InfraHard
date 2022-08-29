@@ -39,7 +39,6 @@ module cpu_MIPS (
         wire memRegControl;
         wire aControl;
         wire bControl;
-        wire reset;
     
 
 
@@ -305,7 +304,7 @@ module cpu_MIPS (
         clk, reset, lodivControl, div, loDiv
     );
 
-    Control_unit Control_unit(
+    Control_unit control_unit(
         clk, reset, excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite,
         srcData, aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl,
         memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
