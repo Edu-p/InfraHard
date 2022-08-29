@@ -115,7 +115,7 @@ module CPU (
         wire [4:0] srcReadOut;
 
         //srcWrite
-        wire [31:0] srcWriteOut;
+        wire [4:0] srcWriteOut;
 
         //srcData
         wire [31:0] srcDataOut;
@@ -196,11 +196,11 @@ module CPU (
     );
 
     Mux_SrcWrite mux_src_write(
-        RT, OFFSET, 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
+        RT, OFFSET[4:0], 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
     );
 
     Mux_SrcData mux_src_data(
-        a, LS, HImult, LOmult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, HIdiv, LOdiv, srcData, srcDataOut
+        a, ls, hiMult, loMult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, hiDiv, loDiv, srcData, srcDataOut
     );
 
     Mux_AluSrcA mux_alu_src_a(
