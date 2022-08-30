@@ -233,7 +233,7 @@ module CPU (
     );
 
     SignExtend16 sign_extend_16(
-        OFFSET, signExtend16
+        OFFSET, signextend16
     );
 
 // instantiate provided modules(except registradores)

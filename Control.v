@@ -116,16 +116,22 @@ module Control(
     reg [5:0] counter;
 
 
+
 // reset
     initial begin
         resetOut = 1'b1;
+        state = fetch;
+        counter = 6'b000000;
+        O = 1'b0;
+        notFound = 1'b0;
+        div0 = 1'b0;
+        OPCODE = 6'b000000;
+        Funct = 6'b100000;
     end
 
 // main cycle
     always @(posedge clk) begin
-
-        if(reset == 1'b1)begin
-            // mux
+        // mux
                 excpControl = 2'b00;
                 iord = 2'b00;
                 excpCtrl = 2'b00;
@@ -159,13 +165,20 @@ module Control(
                 memRegControl = 1'b0;
                 aControl = 1'b0;
                 bControl = 1'b0;
+
+
+        if(reset == 1'b1)begin
                 counter = 6'b000000;
+                srcWrite = 3'b010;
+                srcData = 4'b1000;
+                regWrite = 1'b1;
             if(state != RESET_State)begin
-                    resetOut = 1'b0;
+                    resetOut = 1'b1;
                     state = RESET_State;
+                    
             end 
             else begin
-                    resetOut = 1'b1;
+                    resetOut = 1'b0;
                     state = fetch;
             end 
         end   
@@ -193,6 +206,12 @@ module Control(
                             counter = counter + 1;
                         end
                         else begin
+                            if(OPCODE == codeR)begin
+                                state = codeR;
+                            end
+                            else begin
+                                state = codeIorJ;
+                            end
                             counter = 6'b000000;
                         end
                         regWrite = 1'b0;
@@ -202,13 +221,6 @@ module Control(
                         aluSrcB = 2'b11;
                         seControl = 1'b1;
                         aluOutControl = 1'b1;
-
-                        if(OPCODE == codeR)begin
-                            state = codeR;
-                        end
-                        else begin
-                            state = codeIorJ;
-                        end
                     end
 
                     codeR: begin
@@ -222,7 +234,7 @@ module Control(
 
                                     counter = counter + 1;
                                end 
-                               else if(counter == 6'b000001) begin
+                               else begin
                                     if(O==1)begin
                                         counter = 6'b000000;
                                         state=overflow;
@@ -231,19 +243,46 @@ module Control(
                                         srcData = 4'b0000;
                                         srcWrite = 3'b001;
                                         regWrite = 1'b1;
-                                    end 
+                                    end
+                                    if (counter == 6'b000010) begin
+                                        state = fetch; 
+                                        counter = 6'b000000;
+                                    end
+                                    else begin
+                                        counter = counter + 1;
+                                    end
                                end
-                               else begin
-                                    counter = 6'b000000;
-                                    state = fetch;
-                               end 
                             end
                         endcase
                     end
                     codeIorJ: begin
                         case(OPCODE)
                             ADDI: begin
-                                counter = counter + 1;
+                                if (counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b10;
+                                    aluOutControl = 1'b1;
+                                    aluControl = 1'b1;
+                                    counter = counter + 1;
+                                end
+                                else begin
+                                    if(O==1)begin
+                                        counter = 6'b000000;
+                                        state=overflow;
+                                    end
+                                    else begin
+                                        srcData = 4'b0000;
+                                        srcWrite = 3'b001;
+                                        regWrite = 1'b1;
+                                    end
+                                    if (counter == 6'b000010) begin
+                                        state = fetch; 
+                                        counter = 6'b000000;
+                                    end
+                                    else begin
+                                        counter = counter + 1;
+                                    end
+                                end
                             end
                         endcase
                     end
