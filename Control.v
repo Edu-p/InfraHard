@@ -82,7 +82,7 @@ module Control(
     parameter SLL = 6'b000000;
     parameter SLLV = 6'b000100;
     parameter SLT = 6'b101010;
-    parameter SRA = 6'b000011;
+    parameter SRA = 6'b000011; // igual a linha 95 (isso é um problema?)
     parameter SRAV = 6'b000111;
     parameter SRL = 6'b000010;
     parameter SUB = 6'b100010;
@@ -92,7 +92,7 @@ module Control(
 
 // j format
     parameter J = 6'b000010;
-    parameter JAL = 6'b000011;
+    parameter JAL = 6'b000011; // igual a linha 85
 
 // i format
     parameter ADDI = 6'b001000;
