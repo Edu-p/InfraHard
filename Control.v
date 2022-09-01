@@ -222,6 +222,7 @@ module Control(
                         aluOutControl = 1'b1;
                     end
 
+
                     codeR: begin
                         case(Funct)
                             ADD:begin
@@ -269,6 +270,31 @@ module Control(
                                     end
                                end
                             end
+
+                            AND:begin
+                                aluSrcA = 2'b01;
+                                aluSrcB = 2'b00;
+                               if(counter == 6'b000000)begin
+                                    aluControl = 3'b011;
+                                    aluOutControl = 1'b1;
+                                    counter = counter + 1;
+                               end 
+                               else begin
+                                    if(O==1)begin
+                                        counter = 6'b000000;
+                                        state=overflow;
+                                    end 
+                                    else begin
+                                        srcData = 4'b0000;
+                                        regWrite = 1'b1;
+                                        srcWrite = 3'b001;
+                                        state = fetch; 
+                                        counter = 6'b000000;
+                                    end
+                               end
+                            end
+
+
                         endcase
                     end
                     codeIorJ: begin
