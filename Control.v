@@ -267,7 +267,7 @@ module Control(
                                     end
                                     else begin
                                         srcData = 4'b0000;
-                                        srcWrite = 3'b001;
+                                        srcWrite = 3'b000;
                                         regWrite = 1'b1;
                                     end
                                     if (counter == 6'b000010) begin

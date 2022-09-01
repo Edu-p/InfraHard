@@ -1,0 +1,77 @@
+# Compile of Control.v failed with 5 errors.
+# Compile of CPU.v was successful.
+# Compile of ExtendShiftLeft2.v was successful.
+# Compile of ShiftLeft2.v was successful.
+# Compile of ShiftLeft16.v was successful.
+# Compile of SignExtend1.v was successful.
+# Compile of SignExtend16.v was successful.
+# Compile of Banco_reg.vhd was successful.
+# Compile of Instr_Reg.vhd was successful.
+# Compile of Memoria.vhd was successful.
+# Compile of RegDesloc.vhd was successful.
+# Compile of Registrador.vhd was successful.
+# Compile of ula32.vhd was successful.
+# Compile of Mux_AluSrcA.v was successful.
+# Compile of Mux_AluSrcB.v was successful.
+# Compile of Mux_ExcpControl.v was successful.
+# Compile of Mux_ExcpCtrl.v was successful.
+# Compile of Mux_Iord.v was successful.
+# Compile of Mux_PcSource.v was successful.
+# Compile of Mux_ShiftAmt.v was successful.
+# Compile of Mux_ShiftSrc.v was successful.
+# Compile of Mux_SrcData.v was successful.
+# Compile of Mux_SrcRead.v was successful.
+# Compile of Mux_SrcWrite.v was successful.
+# 24 compiles, 1 failed with 5 errors.
+# Compile of Control.v failed with 5 errors.
+# Compile of Control.v failed with 5 errors.
+# Compile of CPU.v was successful.
+# Compile of ExtendShiftLeft2.v was successful.
+# Compile of ShiftLeft2.v was successful.
+# Compile of ShiftLeft16.v was successful.
+# Compile of SignExtend1.v was successful.
+# Compile of SignExtend16.v was successful.
+# Compile of Banco_reg.vhd was successful.
+# Compile of Instr_Reg.vhd was successful.
+# Compile of Memoria.vhd was successful.
+# Compile of RegDesloc.vhd was successful.
+# Compile of Registrador.vhd was successful.
+# Compile of ula32.vhd was successful.
+# Compile of Mux_AluSrcA.v was successful.
+# Compile of Mux_AluSrcB.v was successful.
+# Compile of Mux_ExcpControl.v was successful.
+# Compile of Mux_ExcpCtrl.v was successful.
+# Compile of Mux_Iord.v was successful.
+# Compile of Mux_PcSource.v was successful.
+# Compile of Mux_ShiftAmt.v was successful.
+# Compile of Mux_ShiftSrc.v was successful.
+# Compile of Mux_SrcData.v was successful.
+# Compile of Mux_SrcRead.v was successful.
+# Compile of Mux_SrcWrite.v was successful.
+# 23 compiles, 0 failed with no errors.
+# Compile of Control.v failed with 5 errors.
+# Compile of Control.v was successful.
+# Compile of CPU.v was successful.
+# Compile of ExtendShiftLeft2.v was successful.
+# Compile of ShiftLeft2.v was successful.
+# Compile of ShiftLeft16.v was successful.
+# Compile of SignExtend1.v was successful.
+# Compile of SignExtend16.v was successful.
+# Compile of Banco_reg.vhd was successful.
+# Compile of Instr_Reg.vhd was successful.
+# Compile of Memoria.vhd was successful.
+# Compile of RegDesloc.vhd was successful.
+# Compile of Registrador.vhd was successful.
+# Compile of ula32.vhd was successful.
+# Compile of Mux_AluSrcA.v was successful.
+# Compile of Mux_AluSrcB.v was successful.
+# Compile of Mux_ExcpControl.v was successful.
+# Compile of Mux_ExcpCtrl.v was successful.
+# Compile of Mux_Iord.v was successful.
+# Compile of Mux_PcSource.v was successful.
+# Compile of Mux_ShiftAmt.v was successful.
+# Compile of Mux_ShiftSrc.v was successful.
+# Compile of Mux_SrcData.v was successful.
+# Compile of Mux_SrcRead.v was successful.
+# Compile of Mux_SrcWrite.v was successful.
+# 24 compiles, 0 failed with no errors.
