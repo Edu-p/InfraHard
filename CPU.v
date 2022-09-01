@@ -200,7 +200,7 @@ module CPU (
     );
 
     Mux_SrcData mux_src_data(
-        a, ls, hiMult, loMult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, hiDiv, loDiv, srcData, srcDataOut
+        ALUOut, ls, hiMult, loMult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, hiDiv, loDiv, srcData, srcDataOut
     );
 
     Mux_AluSrcA mux_alu_src_a(
@@ -305,7 +305,7 @@ module CPU (
         aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl, 
         memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
         aluOutControl, epcControl, himultControl, lomultControl, hidivControl, lodivControl,
-        memRegControl, aControl, bControl, resetOut
+        memRegControl, aControl, bControl, reset
     );    
 
 endmodule

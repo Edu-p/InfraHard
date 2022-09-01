@@ -82,7 +82,7 @@ module Control(
     parameter SLL = 6'b000000;
     parameter SLLV = 6'b000100;
     parameter SLT = 6'b101010;
-    parameter SRA = 6'b000011; // igual a linha 95 (isso é um problema?)
+    parameter SRA = 6'b000011; 
     parameter SRAV = 6'b000111;
     parameter SRL = 6'b000010;
     parameter SUB = 6'b100010;
@@ -92,7 +92,7 @@ module Control(
 
 // j format
     parameter J = 6'b000010;
-    parameter JAL = 6'b000011; // igual a linha 85
+    parameter JAL = 6'b000011; 
 
 // i format
     parameter ADDI = 6'b001000;
@@ -122,11 +122,6 @@ module Control(
         resetOut = 1'b1;
         state = fetch;
         counter = 6'b000000;
-        O = 1'b0;
-        notFound = 1'b0;
-        div0 = 1'b0;
-        OPCODE = 6'b000000;
-        Funct = 6'b100000;
     end
 
 // main cycle
@@ -188,7 +183,7 @@ module Control(
                     fetch: begin
                         aluControl = 3'b001;
                         aluSrcB = 2'b01;
-                        if(counter != 6'b000011)begin
+                        if(counter != 6'b000010)begin
                             counter = counter + 1;
                         end 
                         else begin
@@ -262,7 +257,7 @@ module Control(
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b10;
                                     aluOutControl = 1'b1;
-                                    aluControl = 1'b1;
+                                    aluControl = 3'b001;
                                     counter = counter + 1;
                                 end
                                 else begin
