@@ -10,7 +10,7 @@ module Mult (
     reg [31:0] acumulated;
     reg [5:0] nOfBits;
 
-    reg aux = 1
+    reg aux = 1;
     
     always @ (posedge clk)begin
 
@@ -70,8 +70,5 @@ module Mult (
         end
     
     end
-
-endmodule
-
 
 endmodule

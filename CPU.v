@@ -59,8 +59,11 @@ module CPU (
         // iord
         wire [31:0] iordOut;
 
-        // mult
-        wire [31:0] mult;
+        // mult output Hi
+        wire [31:0] Hi;
+
+        // mult output Lo
+        wire [31:0] Lo;
 
         // div
         wire [31:0] div;
@@ -283,11 +286,11 @@ module CPU (
     ); 
 
     Registrador hiMultBloco(
-        clk, reset, himultControl, mult, hiMult
+        clk, reset, himultControl, Hi, hiMult
     );
 
     Registrador loMultBloco(
-        clk, reset, lomultControl, mult, loMult
+        clk, reset, lomultControl, Lo, loMult
     );
 
     Registrador hiDivBloco(
