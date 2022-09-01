@@ -138,6 +138,8 @@ module Control(
                 aluSrcA = 2'b00;
                 aluSrcB = 2'b00;
                 pcSource = 3'b000;
+                aControl = 1'b0;
+                bControl = 1'b0;
 
             // other blocks
                 control = 1'b0;
@@ -209,6 +211,8 @@ module Control(
                             end
                             counter = 6'b000000;
                         end
+                        aControl = 1'b1;
+                        bControl = 1'b1;
                         regWrite = 1'b0;
                         aluControl = 3'b001;
                         srcRead = 1'b0;
@@ -221,12 +225,11 @@ module Control(
                     codeR: begin
                         case(Funct)
                             ADD:begin
+                                aluSrcA = 2'b01;
+                                aluSrcB = 2'b00;
                                if(counter == 6'b000000)begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
                                     aluControl = 3'b001;
                                     aluOutControl = 1'b1;
-
                                     counter = counter + 1;
                                end 
                                else begin
@@ -236,15 +239,10 @@ module Control(
                                     end 
                                     else begin
                                         srcData = 4'b0000;
-                                        srcWrite = 3'b001;
                                         regWrite = 1'b1;
-                                    end
-                                    if (counter == 6'b000010) begin
+                                        srcWrite = 3'b001;
                                         state = fetch; 
                                         counter = 6'b000000;
-                                    end
-                                    else begin
-                                        counter = counter + 1;
                                     end
                                end
                             end
@@ -252,10 +250,11 @@ module Control(
                     end
                     codeIorJ: begin
                         case(OPCODE)
-                            ADDI: begin
+                            // rt <- rs + immediate
+                            ADDI: begin    
+                                aluSrcA = 2'b01;
+                                aluSrcB = 2'b10;
                                 if (counter == 6'b000000)begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b10;
                                     aluOutControl = 1'b1;
                                     aluControl = 3'b001;
                                     counter = counter + 1;
@@ -267,15 +266,10 @@ module Control(
                                     end
                                     else begin
                                         srcData = 4'b0000;
-                                        srcWrite = 3'b001;
+                                        srcWrite = 3'b000;
                                         regWrite = 1'b1;
-                                    end
-                                    if (counter == 6'b000010) begin
                                         state = fetch; 
                                         counter = 6'b000000;
-                                    end
-                                    else begin
-                                        counter = counter + 1;
                                     end
                                 end
                             end
