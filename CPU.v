@@ -199,7 +199,7 @@ module CPU (
     );
 
     Mux_SrcWrite mux_src_write(
-        RT, OFFSET[4:0], 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
+        RT, OFFSET[15:11], 5'b11101, 5'b11110, 5'b11111, srcWrite, srcWriteOut 
     );
 
     Mux_SrcData mux_src_data(
