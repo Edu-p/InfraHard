@@ -778,6 +778,40 @@ module Control(
                                 
                             end
 
+                            MFHI: begin
+                                if (counter == 6'b000000) begin
+                                    srcData = 3'b010;
+                                    regWrite = 1'b1;
+                                    srcWrite = 2'b001;
+                                    
+                                    counter = counter + 1;
+                                end
+
+                                
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            MFLO: begin
+                                if (counter == 6'b000000) begin
+                                    srcData = 3'b011;
+                                    regWrite = 1'b1;
+                                    srcWrite = 3'b001;
+                                    
+                                    counter = counter + 1;
+                                end
+
+                                
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
                         endcase
                     end
 
