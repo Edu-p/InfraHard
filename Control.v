@@ -314,6 +314,27 @@ module Control(
                                 end
                             end 
 
+                            SRA:begin
+                               shiftSrc = 1'b1;
+                               shiftAmt = 1'b1;
+                               if(counter == 6'b000000 | counter == 6'b000001)begin
+                                    shiftControl = 3'b001;
+                                    counter = counter + 1;
+                                end
+                                else if(counter == 6'b000010) begin
+                                    shiftControl = 3'b100;
+                                    counter = counter + 1; 
+                                end
+                                else begin
+                                    srcData = 4'b0111;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end 
+
+
                             JR: begin
                                 aluSrcA = 2'b01;
                                 aluControl = 3'b000;
