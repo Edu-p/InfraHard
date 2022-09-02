@@ -448,6 +448,26 @@ module Control(
                                 state = fetch;
                                 counter = 6'b000000;
                             end
+
+                            JAL: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b00;
+                                    aluControl = 3'b000;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+                                else begin
+                                    control = 1'b1;
+                                    pcSource = 2'b10;
+                                    srcData = 3'b000;
+                                    srcWrite = 3'b101;
+                                    regWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end 
+                            end 
                         endcase
                     end
 
