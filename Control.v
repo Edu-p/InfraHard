@@ -440,6 +440,14 @@ module Control(
                                 state = fetch; 
                                 counter = 6'b000000;
                             end 
+
+                            J: begin
+                                control = 1'b1;
+                                pcSource = 3'b010;
+
+                                state = fetch;
+                                counter = 6'b000000;
+                            end
                         endcase
                     end
 
