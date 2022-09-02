@@ -405,6 +405,9 @@ module Control(
                             end
 
                         endcase
+
+
+                        
                     end
                     codeIorJ: begin
                         case(OPCODE)
@@ -467,7 +470,51 @@ module Control(
                                     state = fetch;
                                     counter = 6'b000000;
                                 end 
-                            end 
+                            end
+
+                            SLT: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00
+                                    aluControl = 3'b111;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else begin
+                                    srcData = 3'b000;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            SLTI: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b10
+                                    aluControl = 3'b111;
+                                    aluOutControl = 1'b1;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else begin
+                                    srcData = 3'b000;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+
+
                         endcase
                     end
 
