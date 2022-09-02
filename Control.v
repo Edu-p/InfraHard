@@ -513,7 +513,83 @@ module Control(
                                 end
                             end
 
+                            SW: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
 
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    ssControl = 2'b01;
+                                    memWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
+                            SH: begin
+
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    ssControl = 2'b10;
+                                    memWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            SB: begin
+
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    ssControl = 2'b11;
+                                    memWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
 
                         endcase
                     end
