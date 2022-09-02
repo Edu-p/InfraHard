@@ -1,74 +1,63 @@
 module Mult (
-    input wire clk, reset, multControl, 
-    input wire [31:0] a, b, 
-    output reg [31:0] hi, lo
+    input wire clk,
+    input wire reset,
+    input wire control, 
+    input wire [31:0] in0,
+    input wire [31:0] in1, 
+    output reg [31:0] out0,
+    output reg [31:0] out1
 );
 
-    reg [31:0] multiplicand; 
-    reg [31:0] multiplier;   
-    reg multiplierZero;
-    reg [31:0] acumulated;
-    reg [5:0] nOfBits;
+    reg [31:0] M; 
+    reg [31:0] Q;   
+    reg Q1;
+    reg [31:0] A;
+    reg [5:0] counter;
 
     reg aux = 1;
     
     always @ (posedge clk)begin
 
-        if(multControl == 1'b1)begin
-
-            hi = 32'b00000000000000000000000000000000;
-            lo = 32'b0000000000000000000000000000;
-            nOfBits = 6'd32;
-            multiplicand = a;
-            multiplier = b;
-            multiplierZero = 1'b0;
-            acumulated = 32'b0;
-            aux = 1'b1;
+        if(control == 1'b0)begin
+            counter = 6'b000000;
+            Q = 32'b00000000000000000000000000000000;
+            M = 32'b00000000000000000000000000000000;
+            Q1 = 1'b0;
+            A = 32'b00000000000000000000000000000000;
 
         end
-
-        if(reset == 1'b1 && aux == 1'b1)begin
-
-            hi = 32'b0;
-            lo = 32'b0;
-            nOfBits = 6'd32;
-            multiplicand = a;
-            multiplier = b;
-            multiplierZero = 1'b0;
-            acumulated = 32'b0;
-
-        end else if(nOfBits != 0 && aux == 1'b1) begin
-
-            if(multiplier[0] == 1'b1 && multiplierZero == 1'b0) begin
-
-            acumulated = acumulated - multiplicand;
-
-            end else if(multiplier[0] == 1'b0 && multiplierZero == 1'b1) begin
-
-            acumulated = acumulated + multiplicand;
-
-            end 
-
-            {acumulated, multiplier, multiplierZero} = {acumulated, multiplier, multiplierZero} >> 1'b1;
-
-            if(acumulated[30] == 1'b1)begin
-
-                acumulated[31] = 1'b1; 
-
+        else begin
+            if(counter == 6'b000000) begin
+                Q = in0;
+                M = in1;
+                counter = counter + 1;
             end
-
-            nOfBits = nOfBits - 1'b1;
-            
-            if (nOfBits == 6'b000000) begin
-
-                hi = acumulated;
-                lo = multiplier;
-                aux = 1'b0;
-
+            else if(counter == 6'b100000) begin
+                out0 = A;
+                out1 = Q;
             end
+            else begin 
+                if(Q[0] == 1'b1 && Q1 == 1'b0) begin
 
+                    A = A - M;
+
+                end 
+                else if(Q[0] == 1'b0 && Q1 == 1'b1) begin
+
+                    A = A + M;
+
+                end 
+
+                {A, Q, Q1} = {A, Q, Q1} >> 1'b1;
+
+                if(A[30] == 1'b1)begin
+
+                    A[31] = 1'b1; 
+
+                end
+
+                counter = counter + 1'b1;
+            end
         end
-    
     end
-
 endmodule
