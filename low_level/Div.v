@@ -1,115 +1,61 @@
 
-module Div(input wire clk, reset, divStart, input wire [31:0] A, B, output reg DivZero, output reg [31:0] Hi, Lo);
+module Div(
+    input wire clk,
+    input wire reset,
+    input wire control,
+    input wire [31:0] in0,
+    input wire [31:0] in1,
+    output reg DivZero,
+    output reg [31:0] out0,
+    output reg [31:0] out1
+    );
    
-    reg aux = 1'b0;
-    reg [5:0] nOfBits;
 
-    reg [31:0] divisor;
-    reg [31:0] dividendo;
-    reg [31:0] resto;
-    reg [31:0] resultado;
+    reg [5:0] counter;
+    reg [31:0] M;
+    reg [31:0] Q;
+    reg [31:0] A;
 
-    reg sinalDividendo;
-    reg sinalDivisor;
+    always @(posedge clk) begin
+        
 
-    always @(posedge clk) begin 
-
-        if(reset == 1'b1)begin
-
-            nOfBits = 6'd32;
-            dividendo = A;
-            divisor = B;
-            resto = 32'b0;
-            resultado = 32'b0;
-            sinalDividendo = dividendo[31];
-            sinalDivisor = divisor[31];
-            Hi = 32'b0;
-            Lo = 32'b0;
-
+        if (control == 1'b0) begin
+            M = 32'b00000000000000000000000000000000;
+            Q = 32'b00000000000000000000000000000000;
+            A = 32'b00000000000000000000000000000000;
+            counter = 6'b000000;
+            DivZero = 1'b0;
         end
+        else if(in0 == 32'b00000000000000000000000000000000) begin
+            DivZero = 1'b1;
+        end 
 
-        if(divStart == 1'b1)begin
-
-            aux = 1'b1;
-            nOfBits = 6'd32;
-            dividendo = A;
-            divisor = B;
-            resto = 32'b0;
-            resultado = 32'b0;
-            sinalDividendo = dividendo[31];
-            sinalDivisor = divisor[31];
-            Hi = 32'b0;
-            Lo = 32'b0;
+        else begin
+            if (counter == 6'b000000) begin
+                M = in0;
+                Q = in1;    
+            end
+            if (counter == 6'b100000) begin
+                out0 = A;
+                out1 = Q;
+            end
             
-            if(divisor[31] == 1'b1)begin
 
-                divisor = ~(divisor) + 1'b1;
+            {A, Q} = {A, Q} << 1;
+            A = A - M;
 
-            end 
- 
-            if(dividendo[31] == 1'b1)begin
-
-                dividendo = ~(dividendo) + 1'b1;
-
+            if (A[31] == 1'b1) begin
+                Q[0] = 1'b0;
+                A = A + M;
             end
 
-        end
-
-        if(aux == 1'b1 && nOfBits != 0)begin
-
-            if(B == 32'b0) begin
-
-                DivZero = 1'b1;
-                nOfBits = 6'b0;
-                
-            end else begin
-
-                resto = resto << 1;
-                resto[0] = dividendo[nOfBits - 1];
-
-                if(resto >= divisor)begin
-
-                    resto = resto - divisor;
-                    resultado[nOfBits - 1] = 1'b1;
-
-                end
-
-                nOfBits = nOfBits - 1;
-
-                if(nOfBits == 6'b000000)begin
-
-                    if(sinalDividendo != sinalDivisor)begin
-
-                        if(sinalDivisor == 1'b1)begin
-
-                            Hi = ~resto + 1'b1;
-
-                        end else begin
-
-                            Hi = resto;
-
-                        end
-
-                        Lo = ~resultado + 1'b1;
-
-                    end else begin
-
-                        if(sinalDivisor == 1'b1)begin
-
-                            Hi = ~resto + 1'b1;
-
-                        end else begin
-
-                            Hi = resto;
-
-                        end                    
-
-                        Lo = resultado;
-
-                    end
-
-                end
+            else begin
+                Q[0] = 1'b1;
             end
+
+            
+            counter = counter + 1;
+
         end
 
     end
