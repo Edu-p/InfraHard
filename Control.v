@@ -591,6 +591,93 @@ module Control(
                                 end
                             end
 
+                            LW: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    lsControl = 2'b01;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
+                            LH: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    lsControl = 2'b10;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
+                            LB: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin:
+                                    lsControl = 2'b11;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
                         endcase
                     end
 
