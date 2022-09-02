@@ -59,11 +59,8 @@ module CPU (
         // iord
         wire [31:0] iordOut;
 
-        // mult output Hi
-        wire [31:0] Hi;
-
-        // mult output Lo
-        wire [31:0] Lo;
+        // mult
+        wire [31:0] mult;
 
         // div
         wire [31:0] div;
@@ -308,6 +305,14 @@ module CPU (
 
     Registrador loDivBloco(
         clk, reset, lodivControl, div, loDiv
+    );
+
+    Mult mult(
+        clk, reset, mult, a, b, hiMult, loMult  
+    );
+
+    Div div(
+        clk, reset, div, a, b, div0, hiDiv, loDiv
     );
 
 // instantiate ControlUnit
