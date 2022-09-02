@@ -1,11 +1,11 @@
 module Mult (
     input wire clk, reset, multControl, 
     input wire [31:0] a, b, 
-    output reg [31:0] Hi, Lo
+    output reg [31:0] hi, lo
 );
 
-    reg [31:0] multiplicand; //primeiro termo (a)
-    reg [31:0] multiplier;   //segundo termo (b)
+    reg [31:0] multiplicand; 
+    reg [31:0] multiplier;   
     reg multiplierZero;
     reg [31:0] acumulated;
     reg [5:0] nOfBits;
@@ -16,8 +16,8 @@ module Mult (
 
         if(multControl == 1'b1)begin
 
-            Hi = 32'b0;
-            Lo = 32'b0;
+            hi = 32'b00000000000000000000000000000000;
+            lo = 32'b0000000000000000000000000000;
             nOfBits = 6'd32;
             multiplicand = a;
             multiplier = b;
@@ -29,8 +29,8 @@ module Mult (
 
         if(reset == 1'b1 && aux == 1'b1)begin
 
-            Hi = 32'b0;
-            Lo = 32'b0;
+            hi = 32'b0;
+            lo = 32'b0;
             nOfBits = 6'd32;
             multiplicand = a;
             multiplier = b;
@@ -53,7 +53,7 @@ module Mult (
 
             if(acumulated[30] == 1'b1)begin
 
-                acumulated[31] = 1'b1; //O right shift aritmetico com >>> não estava funcionando, por isso botamos esse corretor de sinal
+                acumulated[31] = 1'b1; 
 
             end
 
@@ -61,8 +61,8 @@ module Mult (
             
             if (nOfBits == 6'b000000) begin
 
-                Hi = acumulated;
-                Lo = multiplier;
+                hi = acumulated;
+                lo = multiplier;
                 aux = 1'b0;
 
             end
