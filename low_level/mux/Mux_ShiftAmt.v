@@ -6,6 +6,6 @@ module Mux_ShiftAmt(
     );
 
     assign out = (control == 1'b0) ? in0[4:0]:
-                 in1[4:0];
+                 in1[10:6];
                  
 endmodule
