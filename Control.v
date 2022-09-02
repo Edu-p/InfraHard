@@ -475,7 +475,7 @@ module Control(
                             SLT: begin
                                 if(counter == 6'b000000) begin
                                     aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00
+                                    aluSrcB = 2'b00;
                                     aluControl = 3'b111;
                                     aluOutControl = 1'b1;
 
@@ -495,7 +495,7 @@ module Control(
                             SLTI: begin
                                 if(counter == 6'b000000) begin
                                     aluSrcA = 2'b01;
-                                    aluSrcB = 2'b10
+                                    aluSrcB = 2'b10;
                                     aluControl = 3'b111;
                                     aluOutControl = 1'b1;
                                     seControl = 1'b1;
@@ -517,7 +517,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -529,7 +529,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     ssControl = 2'b01;
                                     memWrite = 1'b1;
 
@@ -544,7 +544,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -556,7 +556,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     ssControl = 2'b10;
                                     memWrite = 1'b1;
 
@@ -570,7 +570,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -582,7 +582,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     ssControl = 2'b11;
                                     memWrite = 1'b1;
 
@@ -595,7 +595,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -607,7 +607,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     lsControl = 2'b01;
                                     srcData = 4'b0001;
                                     srcWrite = 3'b000;
@@ -624,7 +624,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -636,7 +636,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     lsControl = 2'b10;
                                     srcData = 4'b0001;
                                     srcWrite = 3'b000;
@@ -653,7 +653,7 @@ module Control(
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
-                                    aluControl = 3'001;
+                                    aluControl = 3'b001;
                                     seControl = 1'b1;
 
                                     counter = counter + 1;
@@ -665,7 +665,7 @@ module Control(
                                     counter = counter + 1; 
                                 end
                                 
-                                else begin:
+                                else begin
                                     lsControl = 2'b11;
                                     srcData = 4'b0001;
                                     srcWrite = 3'b000;
@@ -679,7 +679,7 @@ module Control(
                             end
 
                             BEQ: begin
-                                if (counter = 6'b000000) begin
+                                if(counter == 6'b000000)begin
                                     aluControl = 3'b000;
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b00;
@@ -704,7 +704,7 @@ module Control(
                             end
 
                             BNE: begin
-                                if (counter = 6'b000000) begin
+                                if (counter == 6'b000000) begin
                                     aluControl = 3'b000;
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b00;
@@ -729,7 +729,7 @@ module Control(
                             end
 
                             BLE: begin
-                                if (counter = 6'b000000) begin
+                                if (counter == 6'b000000) begin
                                     aluControl = 3'b000;
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b00;
@@ -754,7 +754,7 @@ module Control(
                             end
 
                             BGT: begin
-                                if (counter = 6'b000000) begin
+                                if (counter == 6'b000000) begin
                                     aluControl = 3'b000;
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b00;
