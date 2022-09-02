@@ -307,11 +307,11 @@ module CPU (
         clk, reset, lodivControl, div, loDiv
     );
 
-    Mult mult(
+    Mult multiplication(
         clk, reset, mult, a, b, hiMult, loMult  
     );
 
-    Div div(
+    Div division(
         clk, reset, div, a, b, div0, hiDiv, loDiv
     );
 
