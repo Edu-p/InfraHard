@@ -404,7 +404,7 @@ module Control(
                                 counter = 6'b000000;
                             end
 
-                            
+
 
 
                             RTE: begin
@@ -412,12 +412,9 @@ module Control(
                               control = 1'b1;'
                             end
 
-
-
                         endcase
 
 
-                        
                     end
                     codeIorJ: begin
                         case(OPCODE)
@@ -819,6 +816,16 @@ module Control(
                                     state = fetch;
                                     counter = 6'b000000;
                                 end
+                                
+                            end
+
+                            BREAK: begin
+                                aluSrcA = 2'b00;
+                                aluSrcB = 2'b01;
+                                aluControl = 3'b010;
+
+                                pcSource = 3'b000;
+                                control = 1'b1;
                                 
                             end
 
