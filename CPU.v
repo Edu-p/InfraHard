@@ -239,6 +239,15 @@ module CPU (
         OFFSET, signextend16
     );
 
+//instantiate LS and SS
+    LS Ls(
+        memoryDataRegister, lsControl, ls
+    );
+
+    SS Ss(
+        b, memoryDataRegister, ssControl, ss
+    );
+
 // instantiate provided modules(except registradores)
     Banco_reg banco_reg(
         clk, reset, regWrite, srcReadOut, RT, srcWriteOut, srcDataOut, registersData1, registersData2 
