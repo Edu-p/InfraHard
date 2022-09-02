@@ -404,6 +404,16 @@ module Control(
                                 counter = 6'b000000;
                             end
 
+                            
+
+
+                            RTE: begin
+                              pcSource =3'b100;
+                              control = 1'b1;'
+                            end
+
+
+
                         endcase
 
 
