@@ -431,6 +431,17 @@ module Control(
                                     end
                                 end
                             end
+
+                            LUI: begin
+                                aluSrcA = 2'b00;
+                                aluSrcB = 2'b01;
+                                aluControl = 3'b010;
+                                pcSource = 3'b000;
+                                control = 1'b1;
+
+                                state = fetch; 
+                                counter = 6'b000000;
+                            end 
                         endcase
                     end
 
