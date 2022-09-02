@@ -678,6 +678,106 @@ module Control(
 
                             end
 
+                            BEQ: begin
+                                if (counter = 6'b000000) begin
+                                    aluControl = 3'b000;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(EQ == 1'b1) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BNE: begin
+                                if (counter = 6'b000000) begin
+                                    aluControl = 3'b000;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(EQ == 1'b0) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BLE: begin
+                                if (counter = 6'b000000) begin
+                                    aluControl = 3'b000;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(GT == 1'b0) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BGT: begin
+                                if (counter = 6'b000000) begin
+                                    aluControl = 3'b000;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(GT == 1'b1) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
                         endcase
                     end
 
