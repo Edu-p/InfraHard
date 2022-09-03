@@ -110,6 +110,8 @@ module Control(
     parameter SW = 6'b101011;
     parameter SLTI = 6'b001010;
     parameter LUI = 6'b001111;
+    parameter PUSH = 6'b101101;
+    parameter POP = 6'b101100;
 
 // variables
     reg [5:0] state;
@@ -442,8 +444,26 @@ module Control(
                                 end
                             end
 
+                             ADDIU: begin    
+                                aluSrcA = 2'b01;
+                                aluSrcB = 2'b10;
+                                if (counter == 6'b000000)begin
+                                    aluOutControl = 1'b1;
+                                    aluControl = 3'b001;
+                                    counter = counter + 1;
+                                end
+                                else begin
+                                    srcData = 4'b0000;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    state = fetch; 
+                                    counter = 6'b000000;
+                                    end
+                                end
+                            end
+
                             LUI: begin
-                                srcData = 3'b101;
+                                srcData = 4'b0101;
                                 srcWrite = 3'b000;
                                 regWrite = 1'b1;
 
@@ -470,7 +490,7 @@ module Control(
                                 else begin
                                     control = 1'b1;
                                     pcSource = 2'b10;
-                                    srcData = 3'b000;
+                                    srcData = 4'b0000;
                                     srcWrite = 3'b101;
                                     regWrite = 1'b1;
 
@@ -490,7 +510,7 @@ module Control(
                                 end
 
                                 else begin
-                                    srcData = 3'b000;
+                                    srcData = 4'b0000;
                                     srcWrite = 3'b001;
                                     regWrite = 1'b1;
 
@@ -511,7 +531,7 @@ module Control(
                                 end
 
                                 else begin
-                                    srcData = 3'b000;
+                                    srcData = 4'b0000;
                                     srcWrite = 3'b001;
                                     regWrite = 1'b1;
 
@@ -787,7 +807,7 @@ module Control(
 
                             MFHI: begin
                                 if (counter == 6'b000000) begin
-                                    srcData = 3'b010;
+                                    srcData = 4'b0010;
                                     regWrite = 1'b1;
                                     srcWrite = 2'b001;
                                     
@@ -804,7 +824,7 @@ module Control(
 
                             MFLO: begin
                                 if (counter == 6'b000000) begin
-                                    srcData = 3'b011;
+                                    srcData = 4'b0011;
                                     regWrite = 1'b1;
                                     srcWrite = 3'b001;
                                     
@@ -827,6 +847,60 @@ module Control(
                                 pcSource = 3'b000;
                                 control = 1'b1;
                                 
+                            end
+
+                            PUSH: begin
+                                if(counter == 6'b000000') begin
+                                    srcRead = 1'b1;
+                                    regWrite = 1'b0;
+
+                    
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000001') begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b01;
+                                    aluControl = 3'b010;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+
+                                else if(counter == 6'b000010') begin
+                                    srcWrite = 3'b010;
+                                    srcData = 4'b0000;
+                                    regWrite = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000011') begin
+                                    aluSrcA = 2'b01;
+                                    aluControl = 3'b000;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000100') begin
+                                    iord = 2'b01;
+                                    memWrite = 1'b0;
+
+                                    counter = counter + 1;     
+                                end
+
+                                else if(counter == 6'b000101') begin
+                                    ssControl = 2'b01;
+                                    iord = 2'b01;
+                                    memWrite = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000111') begin
+                                    state = fetch;
+                                    counter = 6'b000000;'
+                                end
                             end
 
                         endcase
