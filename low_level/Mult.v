@@ -32,16 +32,13 @@ module Mult (
                 M = in1;
                 counter = counter + 1;
             end
-            else if(counter == 6'b100000) begin
-                out0 = A;
-                out1 = Q;
-            end
             else begin 
                 if(Q[0] == 1'b1 && Q1 == 1'b0) begin
 
                     A = A - M;
 
                 end 
+
                 else if(Q[0] == 1'b0 && Q1 == 1'b1) begin
 
                     A = A + M;
@@ -57,6 +54,11 @@ module Mult (
                 end
 
                 counter = counter + 1'b1;
+            end
+
+            if(counter == 6'b100001) begin
+                out0 = A;
+                out1 = Q;
             end
         end
     end

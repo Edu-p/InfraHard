@@ -34,11 +34,15 @@ module Control(
         output reg [1:0] aluSrcA,
         output reg [1:0] aluSrcB,
         output reg [2:0] pcSource,
+        output reg MultDiv,
+        output reg outAlu,
 
         // other blocks
+        output reg hiControl,
+        output reg loControl,
         output reg control,
-        output reg [1:0]multControl,
-        output reg [1:0]divControl,
+        output reg multControl,
+        output reg divControl,
         output reg seControl,
         output reg memWrite,
         output reg [1:0] ssControl,
@@ -49,10 +53,6 @@ module Control(
         output reg [2:0] aluControl,
         output reg aluOutControl,
         output reg epcControl,
-        output reg himultControl,
-        output reg lomultControl,
-        output reg hidivControl,
-        output reg lodivControl,
         output reg memRegControl,
         output reg aControl,
         output reg bControl,
@@ -142,8 +142,12 @@ module Control(
                 pcSource = 3'b000;
                 aControl = 1'b0;
                 bControl = 1'b0;
+                MultDiv = 1'b0;
+                outAlu= 1'b0;
 
             // other blocks
+                hiControl = 1'b0;
+                loControl = 1'b0;
                 control = 1'b0;
                 multControl = 1'b0;
                 divControl = 1'b0;
@@ -157,10 +161,6 @@ module Control(
                 aluControl = 3'b000;
                 aluOutControl = 1'b0;
                 epcControl = 1'b0;
-                himultControl = 1'b0;
-                lomultControl = 1'b0;
-                hidivControl = 1'b0;
-                lodivControl = 1'b0;
                 memRegControl = 1'b0;
                 aControl = 1'b0;
                 bControl = 1'b0;
@@ -224,7 +224,7 @@ module Control(
                         aluOutControl = 1'b1;
                     end
 
-
+                //Code R
                     codeR: begin
                         case(Funct)
                             ADD:begin
@@ -232,29 +232,6 @@ module Control(
                                 aluSrcB = 2'b00;
                                if(counter == 6'b000000)begin
                                     aluControl = 3'b001;
-                                    aluOutControl = 1'b1;
-                                    counter = counter + 1;
-                               end 
-                               else begin
-                                    if(O==1)begin
-                                        counter = 6'b000000;
-                                        state=overflow;
-                                    end 
-                                    else begin
-                                        srcData = 4'b0000;
-                                        regWrite = 1'b1;
-                                        srcWrite = 3'b001;
-                                        state = fetch; 
-                                        counter = 6'b000000;
-                                    end
-                               end
-                            end
-
-                            SUB:begin
-                                aluSrcA = 2'b01;
-                                aluSrcB = 2'b00;
-                               if(counter == 6'b000000)begin
-                                    aluControl = 3'b010;
                                     aluOutControl = 1'b1;
                                     counter = counter + 1;
                                end 
@@ -295,7 +272,84 @@ module Control(
                                     end
                                end
                             end
+
+                            //Div
+                            DIV: begin
+                                
+                                if (counter == 6'b100010) begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                    hiControl = 1'b1;
+                                    loControl = 1'b1;
+                                    MultDiv = 1'b1;
+                                end
+                                else begin
+                                    divControl = 1'b1;
+                                    counter = counter + 1;
+                                end
+
+                                if (div0 == 1'b1) begin
+                                    state = ZeroDiv_State;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            //Mult
+                            MULT: begin
+                                if (counter == 6'b100010) begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                    hiControl = 1'b1;
+                                    loControl = 1'b1;
+                                    MultDiv = 1'b0;
+                                end
+                                else begin
+                                    multControl = 1'b1;
+                                    counter = counter + 1;
+                                end
+                            end
+
+                            JR: begin
+                                aluSrcA = 2'b01;
+                                aluControl = 3'b000;
+                                pcSource = 3'b000;
+                                control = 1'b1;
+
+                                state = fetch;
+                                counter = 6'b000000;
+                            end
+
+                            MFHI: begin
+                                if (counter == 6'b000000) begin
+                                    srcData = 4'b0010;
+                                    regWrite = 1'b1;
+                                    srcWrite = 3'b001;
+                                    
+                                    counter = counter + 1;
+                                end
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
                             
+                            MFLO: begin
+                                if (counter == 6'b000000) begin
+                                    srcData = 4'b0011;
+                                    regWrite = 1'b1;
+                                    srcWrite = 3'b001;
+                                    
+                                    counter = counter + 1;
+                                end
+
+                                
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end 
+                            end
+
                             SLL:begin
                                shiftSrc = 1'b1;
                                shiftAmt = 1'b1;
@@ -305,46 +359,6 @@ module Control(
                                 end
                                 else if(counter == 6'b000010) begin
                                     shiftControl = 3'b010;
-                                    counter = counter + 1; 
-                                end
-                                else begin
-                                    srcData = 4'b0111;
-                                    srcWrite = 3'b001;
-                                    regWrite = 1'b1;
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                            end 
-
-                            SRA:begin
-                               shiftSrc = 1'b1;
-                               shiftAmt = 1'b1;
-                               if(counter == 6'b000000 | counter == 6'b000001)begin
-                                    shiftControl = 3'b001;
-                                    counter = counter + 1;
-                                end
-                                else if(counter == 6'b000010) begin
-                                    shiftControl = 3'b100;
-                                    counter = counter + 1; 
-                                end
-                                else begin
-                                    srcData = 4'b0111;
-                                    srcWrite = 3'b001;
-                                    regWrite = 1'b1;
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                            end 
-
-                            SRL:begin
-                               shiftSrc = 1'b1;
-                               shiftAmt = 1'b1;
-                               if(counter == 6'b000000 | counter == 6'b000001)begin
-                                    shiftControl = 3'b001;
-                                    counter = counter + 1;
-                                end
-                                else if(counter == 6'b000010) begin
-                                    shiftControl = 3'b011;
                                     counter = counter + 1; 
                                 end
                                 else begin
@@ -376,6 +390,47 @@ module Control(
                                 end
                             end 
 
+                            SLT: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    aluControl = 3'b111;
+                                    aluOutControl = 1'b1;
+                                    
+
+                                    counter = counter + 1;
+                                end
+
+                                else begin
+                                    srcData = 4'b0000;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            SRA:begin
+                               shiftSrc = 1'b1;
+                               shiftAmt = 1'b1;
+                               if(counter == 6'b000000 | counter == 6'b000001)begin
+                                    shiftControl = 3'b001;
+                                    counter = counter + 1;
+                                end
+                                else if(counter == 6'b000010) begin
+                                    shiftControl = 3'b100;
+                                    counter = counter + 1; 
+                                end
+                                else begin
+                                    srcData = 4'b0111;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end 
+
                             SRAV:begin
                                shiftSrc = 1'b0;
                                shiftAmt = 1'b0;
@@ -396,28 +451,150 @@ module Control(
                                 end
                             end
 
-                            JR: begin
-                                aluSrcA = 2'b01;
-                                aluControl = 3'b000;
-                                pcSource = 3'b000;
-                                control = 1'b1;
+                            SRL:begin
+                               shiftSrc = 1'b1;
+                               shiftAmt = 1'b1;
+                               if(counter == 6'b000000 | counter == 6'b000001)begin
+                                    shiftControl = 3'b001;
+                                    counter = counter + 1;
+                                end
+                                else if(counter == 6'b000010) begin
+                                    shiftControl = 3'b011;
+                                    counter = counter + 1; 
+                                end
+                                else begin
+                                    srcData = 4'b0111;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end 
 
-                                state = fetch;
-                                counter = 6'b000000;
+                            SUB:begin
+                                aluSrcA = 2'b01;
+                                aluSrcB = 2'b00;
+                               if(counter == 6'b000000)begin
+                                    aluControl = 3'b010;
+                                    aluOutControl = 1'b1;
+                                    counter = counter + 1;
+                               end 
+                               else begin
+                                    if(O==1)begin
+                                        counter = 6'b000000;
+                                        state=overflow;
+                                    end 
+                                    else begin
+                                        srcData = 4'b0000;
+                                        regWrite = 1'b1;
+                                        srcWrite = 3'b001;
+                                        state = fetch; 
+                                        counter = 6'b000000;
+                                    end
+                               end
                             end
 
+                            BREAK: begin
+                                aluSrcA = 2'b00;
+                                aluSrcB = 2'b01;
+                                aluControl = 3'b010;
 
-
+                                pcSource = 3'b000;
+                                control = 1'b1;
+                            end
 
                             RTE: begin
                               pcSource =3'b100;
-                              control = 1'b1;'
+                              control = 1'b1;
                             end
 
-                        endcase
+                            //Push
+                            PUSH: begin
+                                if (counter == 6'b000000) begin
+                                    srcRead = 1'b1;
+                                    regWrite = 1'b0;
+                                    counter = counter + 1;
+                                end
+                                else if(counter == 6'b000001) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b01;
+                                    aluControl = 3'b010;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+                                else if(counter == 6'b000010) begin
+                                    srcWrite = 3'b010;
+                                    srcData = 4'b0000;
+                                    regWrite = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000011) begin
+                                    aluSrcA = 2'b01;
+                                    aluControl = 3'b000;
+                                    aluOutControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000100 || counter == 6'b000101) begin
+                                    iord = 2'b01;
+                                    memWrite = 1'b0;
+
+                                    counter = counter + 1;     
+                                end
+
+                                else if(counter == 6'b000110) begin
+                                    ssControl = 2'b01;
+                                    iord = 2'b01;
+                                    memWrite = 1'b1;
+
+                                    counter = counter + 1;
+                                end
+
+                                else if(counter == 6'b000111) begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            //Pop
+                            POP: begin
+                                if (counter == 6'b000000) begin
+                                    srcRead = 1'b1;
+                                    regWrite = 1'b0;
+                                    counter = counter + 1;
+                                end
+                                if (counter == 6'b000001 || counter == 6'b000010) begin
+                                  iord = 2'b01;
+                                end
+                                if (counter == 6'b000011)begin
+                                    lsControl = 2'b01;
+                                    srcData = 4'b0001;
+                                    regWrite = 1'b1;
+                                end
+                                if (counter == 6'b000100) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b01;
+                                    aluControl = 3'b001;
+                                    aluOutControl = 1'b1;
+                                end
+                                if(counter == 6'b000101)
+                                begin
+                                    srcData = 4'b0000;
+                                    srcWrite = 3'b010;
+                                    regWrite = 1'b1;
+                                end
+
+                                
+                            end
 
 
+                        endcase                           
                     end
+                //Code I or J
                     codeIorJ: begin
                         case(OPCODE)
                             // rt <- rs + immediate
@@ -444,7 +621,7 @@ module Control(
                                 end
                             end
 
-                             ADDIU: begin    
+                            ADDIU: begin    
                                 aluSrcA = 2'b01;
                                 aluSrcB = 2'b10;
                                 if (counter == 6'b000000)begin
@@ -458,8 +635,178 @@ module Control(
                                     regWrite = 1'b1;
                                     state = fetch; 
                                     counter = 6'b000000;
-                                    end
                                 end
+                            end
+
+                            BEQ: begin
+                                if(counter == 6'b000000)begin
+                                    aluControl = 3'b111;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    counter = counter + 1;
+                                end
+
+                                else if(EQ == 1'b1) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BNE: begin
+                                if (counter == 6'b000000) begin
+                                    aluControl = 3'b111;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    counter = counter + 1;
+                                end
+
+                                else if(EQ == 1'b0) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BLE: begin
+                                if (counter == 6'b000000) begin
+                                    aluControl = 3'b111;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    counter = counter + 1;
+                                end
+                                else if(GT == 1'b0) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            BGT: begin
+                                if (counter == 6'b000000) begin
+                                    aluControl = 3'b111;
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b00;
+                                    counter = counter + 1;
+                                end
+
+                                else if(GT == 1'b1) begin
+                                    pcSource = 3'b001;
+                                    control = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                                else begin
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                                
+                            end
+
+                            LB: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'b001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+                                    memRegControl = 1'b1;
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin
+                                    lsControl = 2'b11;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
+                            LH: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'b001;
+                                    seControl = 1'b1;
+
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 | counter == 6'b000010) begin
+                                    iord = 2'b01;
+                                    memRegControl = 1'b1;
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin
+                                    lsControl = 2'b10;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
+                            end
+
+                            LW: begin
+                                if(counter == 6'b000000)begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b11;
+                                    aluControl = 3'b001;
+                                    seControl = 1'b1;
+                                    aluOutControl = 1'b1;
+                                    counter = counter + 1;
+                                end 
+
+                                else if(counter == 6'b000001 || counter == 6'b000010) begin
+                                    iord = 2'b01;
+                                    memRegControl = 1'b1;
+                                    counter = counter + 1; 
+                                end
+                                
+                                else begin
+                                    lsControl = 2'b01;
+                                    srcData = 4'b0001;
+                                    srcWrite = 3'b000;
+                                    regWrite = 1'b1;
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+
                             end
 
                             LUI: begin
@@ -471,76 +818,8 @@ module Control(
                                 counter = 6'b000000;
                             end 
 
-                            J: begin
-                                control = 1'b1;
-                                pcSource = 3'b010;
+                            SB: begin
 
-                                state = fetch;
-                                counter = 6'b000000;
-                            end
-
-                            JAL: begin
-                                if(counter == 6'b000000) begin
-                                    aluSrcA = 2'b00;
-                                    aluControl = 3'b000;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-                                else begin
-                                    control = 1'b1;
-                                    pcSource = 2'b10;
-                                    srcData = 4'b0000;
-                                    srcWrite = 3'b101;
-                                    regWrite = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end 
-                            end
-
-                            SLT: begin
-                                if(counter == 6'b000000) begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
-                                    aluControl = 3'b111;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else begin
-                                    srcData = 4'b0000;
-                                    srcWrite = 3'b001;
-                                    regWrite = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                            end
-
-                            SLTI: begin
-                                if(counter == 6'b000000) begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b10;
-                                    aluControl = 3'b111;
-                                    aluOutControl = 1'b1;
-                                    seControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else begin
-                                    srcData = 4'b0000;
-                                    srcWrite = 3'b001;
-                                    regWrite = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                            end
-
-                            SW: begin
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
@@ -557,13 +836,12 @@ module Control(
                                 end
                                 
                                 else begin
-                                    ssControl = 2'b01;
+                                    ssControl = 2'b11;
                                     memWrite = 1'b1;
 
                                     state = fetch;
                                     counter = 6'b000000;
                                 end
-
                             end
 
                             SH: begin
@@ -592,8 +870,28 @@ module Control(
                                 end
                             end
 
-                            SB: begin
+                            SLTI: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b01;
+                                    aluSrcB = 2'b10;
+                                    aluControl = 3'b111;
+                                    aluOutControl = 1'b1;
+                                    seControl = 1'b1;
 
+                                    counter = counter + 1;
+                                end
+
+                                else begin
+                                    srcData = 3'b000;
+                                    srcWrite = 3'b001;
+                                    regWrite = 1'b1;
+
+                                    state = fetch;
+                                    counter = 6'b000000;
+                                end
+                            end
+
+                            SW: begin
                                 if(counter == 6'b000000)begin
                                     aluSrcA = 2'b01;
                                     aluSrcB = 2'b11;
@@ -605,200 +903,43 @@ module Control(
 
                                 else if(counter == 6'b000001 | counter == 6'b000010) begin
                                     iord = 2'b01;
+                                    memRegControl = 1'b1;
 
                                     counter = counter + 1; 
                                 end
                                 
                                 else begin
-                                    ssControl = 2'b11;
+                                    iord = 2'b01;
+                                    ssControl = 2'b01;
                                     memWrite = 1'b1;
-
                                     state = fetch;
                                     counter = 6'b000000;
                                 end
+
                             end
 
-                            LW: begin
-                                if(counter == 6'b000000)begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b11;
-                                    aluControl = 3'b001;
-                                    seControl = 1'b1;
+                            J: begin
+                                control = 1'b1;
+                                pcSource = 3'b010;
+
+                                state = fetch;
+                                counter = 6'b000000;
+                            end
+
+                            JAL: begin
+                                if(counter == 6'b000000) begin
+                                    aluSrcA = 2'b00;
+                                    aluControl = 3'b000;
+                                    aluOutControl = 1'b1;
 
                                     counter = counter + 1;
-                                end 
-
-                                else if(counter == 6'b000001 | counter == 6'b000010) begin
-                                    iord = 2'b01;
-
-                                    counter = counter + 1; 
                                 end
-                                
                                 else begin
-                                    lsControl = 2'b01;
-                                    srcData = 4'b0001;
-                                    srcWrite = 3'b000;
+                                    control = 1'b1;
+                                    pcSource = 2'b10;
+                                    srcData = 4'b0000;
+                                    srcWrite = 3'b101;
                                     regWrite = 1'b1;
-                                    
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                            end
-
-                            LH: begin
-                                if(counter == 6'b000000)begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b11;
-                                    aluControl = 3'b001;
-                                    seControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end 
-
-                                else if(counter == 6'b000001 | counter == 6'b000010) begin
-                                    iord = 2'b01;
-
-                                    counter = counter + 1; 
-                                end
-                                
-                                else begin
-                                    lsControl = 2'b10;
-                                    srcData = 4'b0001;
-                                    srcWrite = 3'b000;
-                                    regWrite = 1'b1;
-                                    
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                            end
-
-                            LB: begin
-                                if(counter == 6'b000000)begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b11;
-                                    aluControl = 3'b001;
-                                    seControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end 
-
-                                else if(counter == 6'b000001 | counter == 6'b000010) begin
-                                    iord = 2'b01;
-
-                                    counter = counter + 1; 
-                                end
-                                
-                                else begin
-                                    lsControl = 2'b11;
-                                    srcData = 4'b0001;
-                                    srcWrite = 3'b000;
-                                    regWrite = 1'b1;
-                                    
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                            end
-
-                            BEQ: begin
-                                if(counter == 6'b000000)begin
-                                    aluControl = 3'b000;
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(EQ == 1'b1) begin
-                                    pcSource = 3'b001;
-                                    control = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                                else begin
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                                
-                            end
-
-                            BNE: begin
-                                if (counter == 6'b000000) begin
-                                    aluControl = 3'b000;
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(EQ == 1'b0) begin
-                                    pcSource = 3'b001;
-                                    control = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                                else begin
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                                
-                            end
-
-                            BLE: begin
-                                if (counter == 6'b000000) begin
-                                    aluControl = 3'b000;
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(GT == 1'b0) begin
-                                    pcSource = 3'b001;
-                                    control = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                                else begin
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-                                
-                            end
-
-                            BGT: begin
-                                if (counter == 6'b000000) begin
-                                    aluControl = 3'b000;
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b00;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(GT == 1'b1) begin
-                                    pcSource = 3'b001;
-                                    control = 1'b1;
-
-                                    state = fetch;
-                                    counter = 6'b000000;
-                                end
-
-                                else begin
                                     state = fetch;
                                     counter = 6'b000000;
                                 end
@@ -809,7 +950,7 @@ module Control(
                                 if (counter == 6'b000000) begin
                                     srcData = 4'b0010;
                                     regWrite = 1'b1;
-                                    srcWrite = 2'b001;
+                                    srcWrite = 3'b001;
                                     
                                     counter = counter + 1;
                                 end
@@ -825,85 +966,55 @@ module Control(
                             MFLO: begin
                                 if (counter == 6'b000000) begin
                                     srcData = 4'b0011;
-                                    regWrite = 1'b1;
                                     srcWrite = 3'b001;
-                                    
-                                    counter = counter + 1;
-                                end
+                                    regWrite = 1'b1;
 
-                                
-                                else begin
                                     state = fetch;
                                     counter = 6'b000000;
-                                end
-                                
+                                end 
                             end
 
-                            BREAK: begin
-                                aluSrcA = 2'b00;
-                                aluSrcB = 2'b01;
-                                aluControl = 3'b010;
-
-                                pcSource = 3'b000;
-                                control = 1'b1;
-                                
-                            end
-
-                            PUSH: begin
-                                if(counter == 6'b000000') begin
-                                    srcRead = 1'b1;
-                                    regWrite = 1'b0;
-
-                    
-                                    counter = counter + 1;
-                                end
-
-                                else if(counter == 6'b000001') begin
-                                    aluSrcA = 2'b01;
-                                    aluSrcB = 2'b01;
-                                    aluControl = 3'b010;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-
-                                else if(counter == 6'b000010') begin
-                                    srcWrite = 3'b010;
-                                    srcData = 4'b0000;
-                                    regWrite = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(counter == 6'b000011') begin
-                                    aluSrcA = 2'b01;
-                                    aluControl = 3'b000;
-                                    aluOutControl = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(counter == 6'b000100') begin
-                                    iord = 2'b01;
-                                    memWrite = 1'b0;
-
-                                    counter = counter + 1;     
-                                end
-
-                                else if(counter == 6'b000101') begin
-                                    ssControl = 2'b01;
-                                    iord = 2'b01;
-                                    memWrite = 1'b1;
-
-                                    counter = counter + 1;
-                                end
-
-                                else if(counter == 6'b000111') begin
-                                    state = fetch;
-                                    counter = 6'b000000;'
-                                end
-                            end
+                            
 
                         endcase
+                    end
+                //404
+                    op404:begin
+                        if( counter == 6'b000000)
+                        begin
+                            aluSrcA = 2'b00;
+                            aluSrcB = 2'b01;
+                            aluControl = 3'b010;
+                            epcControl = 1'b1;  
+                            counter = counter + 1;                       
+                        end
+                        if (counter == 6'b000001 || counter == 6'b000010 ) begin
+                            excpControl = 2'b00;
+                            iord = 2'b10;
+                            lsControl = 2'b11;
+                            srcData = 3'b001;
+                            srcWrite = 3'b011;
+                            regWrite = 1'b1;
+                            counter = counter + 1;
+                        end
+                    end
+                    O: begin
+                        if (counter == 6'b000000) begin
+                            aluSrcB = 2'b01;
+                            aluControl = 3'b010;
+                            epcControl = 1'b1;
+                        end
+                        if (counter == 6'b000001 || counter == 6'b000010 ) begin
+                            excpControl = 2'b10;
+                            iord = 2'b10;
+                            lsControl = 2'b11;
+                            srcData = 3'b001;
+                            srcWrite = 3'b011;
+                            regWrite = 1'b1;
+                            
+                            counter = counter + 1;
+                        end
+                        
                     end
 
             endcase

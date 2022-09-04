@@ -17,11 +17,17 @@ module CPU (
         wire [1:0] aluSrcA;
         wire [1:0] aluSrcB;
         wire [2:0] pcSource;
+        wire MultDiv;
+        wire outAlu;
+        
 
         // other blocks
+        
+        wire hiControl;
+        wire loControl;
         wire control;
-        wire [1:0]multControl;
-        wire [1:0]divControl;
+        wire multControl;
+        wire divControl;
         wire seControl;
         wire memWrite;
         wire [1:0] ssControl;
@@ -32,10 +38,6 @@ module CPU (
         wire [2:0] aluControl;
         wire aluOutControl;
         wire epcControl;
-        wire himultControl;
-        wire lomultControl;
-        wire hidivControl;
-        wire lodivControl;
         wire memRegControl;
         wire aControl;
         wire bControl;
@@ -59,23 +61,23 @@ module CPU (
         // iord
         wire [31:0] iordOut;
 
+        //hi/lo register out
+        wire [31:0] hi;
+        wire [31:0] lo;
+
+        //hi/lo mux out
+        wire [31:0] hiOut;
+        wire [31:0] loOut;
+
         // mult
-        wire [31:0] mult;
+        wire [31:0] multHi;
+        wire [31:0] multLo;
 
         // div
-        wire [31:0] div;
-        
-        // HImult
-        wire [31:0] hiMult;
+        wire [31:0] divHi;
+        wire [31:0] divLo;
 
-        // LOmult
-        wire [31:0] loMult;
-
-        // HIdiv
-        wire [31:0] hiDiv;
-
-        // LOdiv
-        wire [31:0] loDiv;
+        wire [31: 0] aluout;
 
         // signExtend16
         wire [31:0] signextend16;
@@ -200,7 +202,7 @@ module CPU (
     );
 
     Mux_SrcData mux_src_data(
-        ALUOut, ls, hiMult, loMult, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, hiDiv, loDiv, srcData, srcDataOut
+        ALUOut, ls, hi, lo, signextend16, shiftleft16, excpCtrlOut, shiftReg, 32'b00000000000000000000000011100011, divHi, divLo, srcData, srcDataOut
     );
 
     Mux_AluSrcA mux_alu_src_a(
@@ -214,6 +216,23 @@ module CPU (
     Mux_PcSource mux_pc_source(
         result, ALUOut, Concat, memoryDataRegister, EPC, ls, pcSource, pcSourceOut
     );
+
+    Mux_Hi mux_hi(
+        multHi, divHi, MultDiv, hiOut
+    );
+
+    Mux_Lo mux_lo(
+        multLo, divLo, MultDiv, loOut
+    );
+
+    Mux_AluOut mux_aluOut(
+        result, signExtend1, outAlu, aluout
+    );
+//instantiate Concat
+    Concat concat(
+        extendShiftLeft2, pc[31:28],Concat
+    );
+    
 
 // instantiate shiftleft and signextend
     ExtendShiftLeft2 extend_shift_left_2(
@@ -284,44 +303,36 @@ module CPU (
     );
 
     Registrador aluoutBloco(
-        clk, reset, aluOutControl, result, ALUOut
+        clk, reset, aluOutControl, aluout, ALUOut
     );
 
     Registrador epcBloco(
         clk, reset, epcControl, result, EPC
     ); 
-
-    Registrador hiMultBloco(
-        clk, reset, himultControl, Hi, hiMult
+////////////-------------------------------------------------
+    Registrador HI(
+        clk, reset, hiControl, hiOut, hi 
     );
 
-    Registrador loMultBloco(
-        clk, reset, lomultControl, Lo, loMult
+    Registrador LO(
+        clk, reset, loControl, loOut, lo 
     );
-
-    Registrador hiDivBloco(
-        clk, reset, hidivControl, div, hiDiv
-    );
-
-    Registrador loDivBloco(
-        clk, reset, lodivControl, div, loDiv
-    );
-
+ ///////-------------------------------------------
     Mult multiplication(
-        clk, reset, mult, a, b, hiMult, loMult  
+        clk, reset, multControl, a, b, multHi, multLo  
     );
 
     Div division(
-        clk, reset, div, a, b, div0, hiDiv, loDiv
+        clk, reset, divControl, a, b, div0, divHi, divLo
     );
 
 // instantiate ControlUnit
     Control controlUnit(
         clk, reset, O, notFound, div0, OPCODE, OFFSET[5:0], zero, LT, GT, EQ, neg, 
         excpControl, iord, excpCtrl, shiftSrc, shiftAmt, srcRead, srcWrite, srcData,
-        aluSrcA, aluSrcB, pcSource, control, multControl, divControl, seControl, 
+        aluSrcA, aluSrcB, pcSource, MultDiv, outAlu,hiControl,loControl,control, multControl, divControl, seControl, 
         memWrite, ssControl, irWrite, lsControl, shiftControl, regWrite, aluControl,
-        aluOutControl, epcControl, himultControl, lomultControl, hidivControl, lodivControl,
+        aluOutControl, epcControl,
         memRegControl, aControl, bControl, reset
     );    
 
