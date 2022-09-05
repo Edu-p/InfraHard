@@ -647,7 +647,7 @@ module Control(
                                 end
 
                                 else if(EQ == 1'b1) begin
-                                    pcSource = 3'b001;
+                                    pcSource = 3'b000;
                                     control = 1'b1;
                                     state = fetch;
                                     counter = 6'b000000;
@@ -669,7 +669,7 @@ module Control(
                                 end
 
                                 else if(EQ == 1'b0) begin
-                                    pcSource = 3'b001;
+                                    pcSource = 3'b000;
                                     control = 1'b1;
                                     state = fetch;
                                     counter = 6'b000000;
@@ -689,7 +689,7 @@ module Control(
                                     counter = counter + 1;
                                 end
                                 else if(GT == 1'b0) begin
-                                    pcSource = 3'b001;
+                                    pcSource = 3'b000;
                                     control = 1'b1;
                                     state = fetch;
                                     counter = 6'b000000;
@@ -711,7 +711,7 @@ module Control(
                                 end
 
                                 else if(GT == 1'b1) begin
-                                    pcSource = 3'b001;
+                                    pcSource = 3'b000;
                                     control = 1'b1;
                                     state = fetch;
                                     counter = 6'b000000;
